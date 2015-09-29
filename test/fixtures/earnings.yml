@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  q: 1
+  report: 2015-09-25
+  'y': 1
+  revenue: 1.5
+  eps: 1.5
+  stock_id: 
+
+two:
+  q: 1
+  report: 2015-09-25
+  'y': 1
+  revenue: 1.5
+  eps: 1.5
+  stock_id: 
