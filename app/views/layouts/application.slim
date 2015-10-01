@@ -1,0 +1,51 @@
+doctype html
+html
+  head
+    meta charset="utf-8" /
+    meta content="IE=edge" http-equiv="X-UA-Compatible" /
+    meta content="width=device-width, initial-scale=1" name="viewport" /
+    title Stockanalyzer
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = javascript_include_tag "//code.highcharts.com/stock/highstock.js", "chartkick"
+    = yield :head
+    = csrf_meta_tags
+  body
+    = render "layouts/navbar"
+    .container-fluid
+      .row
+        .col-sm-3.col-md-2.sidebar
+          ul.nav.nav-sidebar
+            li.active
+              a href="#" 
+                | Overview
+                span.sr-only (current)
+            li
+              a href="#"  Reports
+            li
+              a href="#"  Analytics
+            li
+              a href="#"  Export
+          ul.nav.nav-sidebar
+            li
+              a href=""  Nav item
+            li
+              a href=""  Nav item again
+            li
+              a href=""  One more nav
+            li
+              a href=""  Another nav item
+            li
+              a href=""  More navigation
+          ul.nav.nav-sidebar
+            li
+              a href=""  Nav item again
+            li
+              a href=""  One more nav
+            li
+              a href=""  Another nav item
+        .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+          h1.page-header Dashboard
+          = yield 
+    p.notice = notice
+    p.alert = alert

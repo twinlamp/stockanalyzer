@@ -51,3 +51,4 @@ gem 'high_voltage', '~> 2.4.0'
 gem 'bootstrap-sass', '~> 3.3.5'
 gem 'stock_quote'
 gem "chartkick"
+gem 'slim'

@@ -1,0 +1,102 @@
+.row
+  .col-md-3
+    .row
+      .com-md-12
+        table.table.table-bordered
+          tr
+            td Price:
+            td = @stock.price.to_f.round(2)
+          tr
+            td PE:
+            td = @stock.pe.to_f.round(2)
+          tr
+            td YoY(ttm):
+            td #{@stock.yoy.to_f.round(2)}%
+          tr
+            td PEG:
+            td = @stock.peg.to_f.round(2)
+    .row
+      .col-md-12
+        table.table.table-striped
+          thead
+            tr
+                th Date
+                th Qtr
+                th Revenue
+                th EPS
+                th TTM
+                th YOY(q)
+          - @stock.earnings.reverse.each_with_index do |earning,i|
+              tr
+                td = earning.report
+                td #{earning.q}Q#{earning.y}
+                td = earning.revenue
+                td = earning.eps
+                td = earning.ttm.to_f.round(2)
+                td #{earning.yoy.to_f.round(1)}%
+  .col-md-9#highchart
+
+
+- if @stock.earnings.empty?
+    = content_for :head do
+        javascript:
+            $(function () {
+                $('#highchart').highcharts('StockChart', {
+                   chart: {
+                        alignTicks: false,
+                        width: 1000,
+                        height: 800,
+                        },
+                   yAxis: [{
+                        type: 'logarithmic',
+                        ceiling: '#{ @stock.graph_max*20 }',
+                        max: '#{ @stock.graph_max*20 }',
+                        min: '#{ @stock.graph_min*20 }',
+                        startOnTick: false,
+                        endOnTick: false,
+                        opposite: false
+                    }],
+                    series: [{
+                        name: "Price",
+                        data: #{ raw @stock.prices }
+                    }]
+                });
+            });
+- else 
+    = content_for :head do
+        javascript:
+            $(function () {
+                $('#highchart').highcharts('StockChart', {
+                   chart: {
+                        alignTicks: false,
+                        width: 1000,
+                        height: 800,
+                        },
+                   yAxis: [{
+                        type: 'logarithmic',
+                        ceiling: '#{ @stock.graph_max*20 }',
+                        max: '#{ @stock.graph_max*20 }',
+                        min: '#{ @stock.graph_min*20 }',
+                        startOnTick: false,
+                        endOnTick: false,
+                        opposite: false
+                    } , {
+                        type: 'logarithmic',
+                        ceiling: '#{ @stock.graph_max }',
+                        max: '#{ @stock.graph_max }',
+                        min: '#{ @stock.graph_min }',
+                        startOnTick: false,
+                        endOnTick: false,
+                        opposite: true
+                    }],
+                    series: [{
+                        name: "Price",
+                        data: #{ raw @stock.prices }
+                    } , {
+                        name: "Earnings",
+                        data: #{ raw @stock.get_trailing_eps },
+                        yAxis: 1,
+                        type: 'column'
+                    }]
+                });
+            });
