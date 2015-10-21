@@ -1,16 +1,48 @@
 class Stock < ActiveRecord::Base
-	has_many :earnings, -> {order(:report)}
+	has_many :earnings, -> {order(:report)}, inverse_of: :stock
 	serialize :prices, Array
+	validates :ticker, presence: true, uniqueness: true
+	validate :tickerness
 
 	def get_trailing_eps
-		earnings[3..-1].map {|e| [e.report.to_time.to_i*1000, e.ttm.round(2)] }
+		earnings[3..-1].map {|e| [e.report.to_time.to_i*1000, e.ttm.round(2)] }.select {|e| e[1] > 0 }
+	end
+
+	def set_earnings
+		if self.earnings.empty?
+			a = Mechanize.new
+			begin
+				page = a.get("https://www.estimize.com/" + ticker)
+			rescue Mechanize::ResponseCodeError
+				return
+			end
+			data = page.search("script").text.scan(/ReleaseCollection\((.*)\)/)[1][0][2..-3].gsub(/\"/,'').gsub(/},{/,'},,,{').split(',,,')
+			hash_data = data.map do |earning|
+				hash = {}
+				earning[1..-2].gsub(/,(\D)/, '%%%\1').gsub(/(\D),/, '\1%%%').split('%%%').each do |el|
+					key = el.split(':')[0]
+					value = el.split(':')[1]
+					hash[key] = value
+				end
+				hash
+			end
+			hash_data[0..-2].each do |earning|
+				params = {}
+				params[:q] = earning["name"][2]
+				params[:report] = Time.at(earning["reportsAt"].to_i/1000).to_date
+				params[:y] = earning["name"][-4..-1]
+				params[:revenue] = earning["revenue"]
+				params[:eps] = earning["eps"]
+				self.earnings.build(params)
+			end
+		end
 	end
 
 	def set_prices
 		temp = []
 		(1..5).each do |i|
 			temp += StockQuote::Stock.history(self.ticker, Date.today - i.years, Date.today - (i-1).years)
-			break if StockQuote::Stock.history(self.ticker, Date.today - i.years, Date.today - (i-1).years).size < 250
+			break if StockQuote::Stock.history(self.ticker, Date.today - i.years, Date.today - (i-1).years).size < 250 # could bring an error if IPO was in first few days of january
 		end
 		self.prices = temp.sort_by {|quote| quote.date }.map {|quote| [ quote.date.to_time.to_i*1000, quote.close.round(2) ] }
 	end
@@ -18,7 +50,7 @@ class Stock < ActiveRecord::Base
 	def update_and_save_prices
 		if self.prices.empty?
 			self.set_prices
-		elsif Time.at((self.prices[-1][0])/1000).to_date + 1 < Date.today
+		elsif Time.at((self.prices[-1][0])/1000).to_date + 1 < Date.today && !(StockQuote::Stock.history(self.ticker, Time.at((self.prices[-1][0])/1000).to_date + 1, Date.today).try(:failure?) rescue false)
 			StockQuote::Stock.history(self.ticker, Time.at((self.prices[-1][0])/1000).to_date + 1, Date.today).sort_by {|quote| quote.date }.map {|quote| [ quote.date.to_time.to_i*1000, quote.close.round(2) ] }.each do |q|
 				self.prices << q
 			end
@@ -26,51 +58,37 @@ class Stock < ActiveRecord::Base
 		self.save
 	end
 
-	def max_price
-		prices.max_by {|q|q[1]}[1]
-	end
-
-	def max_eps
-		get_trailing_eps.max_by { |q|q[1]}[1]
-	end
-
-	def min_price
-		prices.min_by {|q|q[1]}[1]
-	end
-
-	def min_eps
-		get_trailing_eps.min_by { |q|q[1]}[1]
-	end
-
 	def graph_max
-		if earnings.length < 3 || max_price > max_eps*20
-			return 1.2*max_price/20
+		if earnings.length <= 3 || get_trailing_eps.empty? || prices.max_by {|q|q[1]}[1] > get_trailing_eps.max_by { |q|q[1]}[1]*20
+			return (1.2*prices.max_by {|q|q[1]}[1])/20
 		else
-			return 1.2*max_eps
+			return 1.2*get_trailing_eps.max_by { |q|q[1]}[1]
 		end
 	end
 
 	def graph_min
-		if earnings.length < 3 || min_price < min_eps*20
-			return min_price/(1.2*20)
+		if earnings.length <= 3 || get_trailing_eps.empty? || prices.min_by {|q|q[1]}[1] < get_trailing_eps.min_by { |q|q[1]}[1]*20
+			return (prices.min_by {|q|q[1]}[1])/(1.2*20)
 		else
-			return min_eps/1.2
+			return (get_trailing_eps.min_by { |q|q[1]}[1])/1.2
 		end
 	end
 
-	def price
-		prices.last[1]
-	end
-
 	def pe
-		price/get_trailing_eps.last[1] if !earnings.empty?
+		prices.last[1]/earnings.last.ttm if earnings.length >= 4 && earnings.last.ttm > 0
 	end
 
-	def yoy
-		100*((get_trailing_eps[-1][1]/get_trailing_eps[-5][1])-1) if !earnings.empty? && get_trailing_eps.length > 4
+	def yoy_ttm
+		100*((earnings[-1].ttm/earnings[-5].ttm)-1) if earnings.length >= 8 && earnings[-5].ttm > 0
 	end
 
 	def peg
-		pe/yoy if !yoy.nil?
+		pe/yoy_ttm if pe && ( yoy_ttm.try :nonzero? )
+	end
+
+	def tickerness
+		if !(StockQuote::Stock.quote(ticker).try(:stock_exchange) rescue nil)
+			errors.add(:ticker, "should be a proper ticker")
+		end
 	end
 end

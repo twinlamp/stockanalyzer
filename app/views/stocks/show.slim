@@ -5,13 +5,13 @@
         table.table.table-bordered
           tr
             td Price:
-            td = @stock.price.to_f.round(2)
+            td = @stock.prices.last[1].to_f.round(2)
           tr
             td PE:
             td = @stock.pe.to_f.round(2)
           tr
             td YoY(ttm):
-            td #{@stock.yoy.to_f.round(2)}%
+            td #{@stock.yoy_ttm.to_f.round(2)}%
           tr
             td PEG:
             td = @stock.peg.to_f.round(2)
@@ -29,11 +29,11 @@
           - @stock.earnings.reverse.each_with_index do |earning,i|
               tr
                 td = earning.report
-                td #{earning.q}Q#{earning.y}
+                td = "#{earning.q}Q#{earning.y}" if earning.q
                 td = earning.revenue
                 td = earning.eps
-                td = earning.ttm.to_f.round(2)
-                td #{earning.yoy.to_f.round(1)}%
+                td = earning.ttm.to_f.round(2) if earning.ttm
+                td = "#{earning.yoy.to_f.round(1)}%" if earning.yoy
   .col-md-9#highchart
 
 

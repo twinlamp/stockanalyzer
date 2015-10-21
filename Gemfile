@@ -52,3 +52,16 @@ gem 'bootstrap-sass', '~> 3.3.5'
 gem 'stock_quote'
 gem "chartkick"
 gem 'slim'
+gem 'mechanize'
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'ffaker'
+  gem 'shoulda-matchers', '2.8.0'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'capybara-email'
+  gem 'poltergeist'
+  gem 'phantomjs', :require => 'phantomjs/poltergeist'
+end
