@@ -1,11 +1,11 @@
 class Earning < ActiveRecord::Base
-  belongs_to :stock, dependent: :destroy, inverse_of: :earnings
+  belongs_to :stock, inverse_of: :earnings
   validates :eps, presence: true
   validates :report, presence: true
   validate :report_is_valid_date
-  validates :q, numericality: { less_than_or_equal_to: 4, greater_than_or_equal_to: 1 }
-  validates :y, numericality: { greater_than: 0 }
-  validates :revenue, numericality: { greater_than: 0 }
+  validates :q, numericality: { less_than_or_equal_to: 4, greater_than_or_equal_to: 1, allow_blank: true }
+  validates :y, numericality: { greater_than: 0, allow_blank: true }
+  validates :revenue, numericality: { greater_than: 0, allow_blank: true }
 
 
   def ttm

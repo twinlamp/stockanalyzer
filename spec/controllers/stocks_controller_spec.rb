@@ -36,4 +36,13 @@ RSpec.describe StocksController, :type => :controller do
       end
     end
   end
+
+  describe "POST create" do
+      it "sets session[:stock_id] to nil" do
+        get :show, {:ticker => 'SWKS'}
+        expect {
+          xhr :post, :create
+        }.to change{session[:stock_id]}.to(nil)
+      end
+  end
 end

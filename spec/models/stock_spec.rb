@@ -105,8 +105,9 @@ RSpec.describe Stock, :type => :model do
     describe "Stock, .update_and_save_prices" do
       it 'updates prices and does not load duplicates' do
         l = FactoryGirl.create(:stock, {ticker: 'GPRO'})
-        temp = StockQuote::Stock.history('GPRO', Date.today - 14.days, Date.today - 7.days)
-        l.prices = temp.sort_by {|quote| quote.date }.map {|quote| [ quote.date.to_time.to_i*1000, quote.close.round(2) ] }
+        yahoo = YahooFinance::Client.new
+        temp = yahoo.historical_quotes('GPRO', {start_date: Date.today - 14.days, end_date: Date.today - 7.days, period: :daily})
+        l.prices = temp.sort_by {|quote| quote.trade_date }.map {|quote| [ quote.trade_date.to_time.to_i*1000, quote.close.to_f.round(2) ] }
         expect{l.update_and_save_prices}.to change{ l.prices.length }.by_at_least(1)
         expect(l.prices.map{|q|q[0]}.uniq.length).to eq(l.prices.map{|q|[0]}.length)
       end

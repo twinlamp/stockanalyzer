@@ -1,7 +1,11 @@
+h1.page-header
+  p = @stock.ticker
+  -if session[:stock_id].nil?
+    = button_to "Delete Stock", stock_path(@stock), method: :delete, data: { confirm: "Are you sure?" },  class: "btn btn-default btn-xs"
 .row
-  .col-md-3
+  .col-md-4
     .row
-      .com-md-12
+      .col-md-6
         table.table.table-bordered
           tr
             td Price:
@@ -17,86 +21,23 @@
             td = @stock.peg.to_f.round(2)
     .row
       .col-md-12
-        table.table.table-striped
+        table.table.table-striped.text-center#earningstable
           thead
             tr
-                th Date
-                th Qtr
-                th Revenue
-                th EPS
-                th TTM
-                th YOY(q)
-          - @stock.earnings.reverse.each_with_index do |earning,i|
-              tr
-                td = earning.report
-                td = "#{earning.q}Q#{earning.y}" if earning.q
-                td = earning.revenue
-                td = earning.eps
-                td = earning.ttm.to_f.round(2) if earning.ttm
-                td = "#{earning.yoy.to_f.round(1)}%" if earning.yoy
-  .col-md-9#highchart
-
-
-- if @stock.earnings.empty?
-    = content_for :head do
-        javascript:
-            $(function () {
-                $('#highchart').highcharts('StockChart', {
-                   chart: {
-                        alignTicks: false,
-                        width: 1000,
-                        height: 800,
-                        },
-                   yAxis: [{
-                        type: 'logarithmic',
-                        ceiling: '#{ @stock.graph_max*20 }',
-                        max: '#{ @stock.graph_max*20 }',
-                        min: '#{ @stock.graph_min*20 }',
-                        startOnTick: false,
-                        endOnTick: false,
-                        opposite: false
-                    }],
-                    series: [{
-                        name: "Price",
-                        data: #{ raw @stock.prices }
-                    }]
-                });
-            });
-- else 
-    = content_for :head do
-        javascript:
-            $(function () {
-                $('#highchart').highcharts('StockChart', {
-                   chart: {
-                        alignTicks: false,
-                        width: 1000,
-                        height: 800,
-                        },
-                   yAxis: [{
-                        type: 'logarithmic',
-                        ceiling: '#{ @stock.graph_max*20 }',
-                        max: '#{ @stock.graph_max*20 }',
-                        min: '#{ @stock.graph_min*20 }',
-                        startOnTick: false,
-                        endOnTick: false,
-                        opposite: false
-                    } , {
-                        type: 'logarithmic',
-                        ceiling: '#{ @stock.graph_max }',
-                        max: '#{ @stock.graph_max }',
-                        min: '#{ @stock.graph_min }',
-                        startOnTick: false,
-                        endOnTick: false,
-                        opposite: true
-                    }],
-                    series: [{
-                        name: "Price",
-                        data: #{ raw @stock.prices }
-                    } , {
-                        name: "Earnings",
-                        data: #{ raw @stock.get_trailing_eps },
-                        yAxis: 1,
-                        type: 'column'
-                    }]
-                });
-            });
+              th.col-md-2.text-center Date
+              th.col-md-2.text-center[colspan="2"] Qtr
+              th.col-md-2.text-center Revenue
+              th.col-md-2.text-center EPS
+              th.col-md-2.text-center TTM
+              th.col-md-1.text-center YOY(q)
+              th.col-md-1.text-center[style="#{'display:none' if new_stock?}"]
+          tbody
+            = render partial: "earnings/earning", collection: @stock.earnings.reverse
+            - if !new_stock?
+              = render partial: "earnings/form"
+    .row
+      .col-md-12
+        - if new_stock?
+          =button_to 'Save', stocks_path, remote: true, class: "btn btn-default", id: 'save-stock'
+  .col-md-8#highchart
+= render partial: "shared/highchart"

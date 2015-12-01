@@ -1,5 +1,5 @@
 class Stock < ActiveRecord::Base
-	has_many :earnings, -> {order(:report)}, inverse_of: :stock
+	has_many :earnings, -> {order(:report)}, inverse_of: :stock, dependent: :destroy
 	serialize :prices, Array
 	validates :ticker, presence: true, uniqueness: true
 	validate :tickerness
@@ -39,23 +39,20 @@ class Stock < ActiveRecord::Base
 	end
 
 	def set_prices
-		temp = []
-		(1..5).each do |i|
-			temp += StockQuote::Stock.history(self.ticker, Date.today - i.years, Date.today - (i-1).years)
-			break if StockQuote::Stock.history(self.ticker, Date.today - i.years, Date.today - (i-1).years).size < 250 # could bring an error if IPO was in first few days of january
-		end
-		self.prices = temp.sort_by {|quote| quote.date }.map {|quote| [ quote.date.to_time.to_i*1000, quote.close.round(2) ] }
+		quotes = yahoo.historical_quotes(self.ticker, {start_date: Date.today - 5.years, end_date: Date.today, period: :daily})
+		self.prices = quotes.sort_by {|quote| quote.trade_date }.map {|quote| [ quote.trade_date.to_time.to_i*1000, quote.close.to_f.round(2) ] }
 	end
 
 	def update_and_save_prices
 		if self.prices.empty?
 			self.set_prices
-		elsif Time.at((self.prices[-1][0])/1000).to_date + 1 < Date.today && !(StockQuote::Stock.history(self.ticker, Time.at((self.prices[-1][0])/1000).to_date + 1, Date.today).try(:failure?) rescue false)
-			StockQuote::Stock.history(self.ticker, Time.at((self.prices[-1][0])/1000).to_date + 1, Date.today).sort_by {|quote| quote.date }.map {|quote| [ quote.date.to_time.to_i*1000, quote.close.round(2) ] }.each do |q|
+		elsif self.updated_at.to_date < Date.today
+			quotes = yahoo.historical_quotes(self.ticker, {start_date: self.updated_at.to_date - 1, end_date: Date.today, period: :daily})
+			quotes.sort_by {|quote| quote.trade_date }.map {|quote| [ quote.trade_date.to_time.to_i*1000, quote.close.to_f.round(2) ] }.each do |q|
 				self.prices << q
 			end
+			self.prices.uniq!
 		end
-		self.save
 	end
 
 	def graph_max
@@ -86,8 +83,12 @@ class Stock < ActiveRecord::Base
 		pe/yoy_ttm if pe && ( yoy_ttm.try :nonzero? )
 	end
 
+	def yahoo
+		yahoo ||= YahooFinance::Client.new
+	end
+
 	def tickerness
-		if !(StockQuote::Stock.quote(ticker).try(:stock_exchange) rescue nil)
+		if yahoo.quote([ticker], [:stock_exchange]).stock_exchange == "N/A"
 			errors.add(:ticker, "should be a proper ticker")
 		end
 	end

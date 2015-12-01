@@ -1,0 +1,9 @@
+tr[class="earning-#{earning.id}"]
+  td.col-md-2 = earning.report
+  td.col-md-2[colspan="2"] = "#{earning.q}Q #{earning.y}" if earning.q
+  td.col-md-2 = earning.revenue
+  td.col-md-2 = earning.eps
+  td.col-md-2 = earning.ttm.to_f.round(2) if earning.ttm
+  td.col-md-1 = "#{earning.yoy.to_f.round(1)}%" if earning.yoy
+  td.col-md-1[style="#{'display:none' if new_stock?}"] = button_to earning_path(earning), method: :delete, remote: true, class: "btn btn-default btn-xs"
+  	span.glyphicon.glyphicon-remove[aria-hidden="true"]
