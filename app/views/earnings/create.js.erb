@@ -1,32 +1,34 @@
-$('#earningstable tbody').html("<%= j render partial: 'earnings/earning', collection: @stock.earnings.reverse %>");
-$('#earningstable tbody tr:last-child').after("<%= j render partial: 'earnings/form', locals: { stock: @stock } %>");
+$("[class^='earning-']").remove();
+$('#earningstable tbody').prepend("<%= j render partial: 'earnings/earning', collection: @stock.earnings.reverse %>");
 $(function () {
     $('#highchart').highcharts('StockChart', {
        chart: {
             alignTicks: false,
-            width: 1000,
             height: 800,
             },
        yAxis: [{
             type: 'logarithmic',
-            ceiling: '<%= @stock.graph_max*20 %>',
-            max: '<%= @stock.graph_max*20 %>',
-            min: '<%= @stock.graph_min*20 %>',
+            ceiling: '<%= @graph_max*20 %>',
+            max: '<%= @graph_max*20 %>',
+            min: '<%= @graph_min*20 %>',
             startOnTick: false,
             endOnTick: false,
             opposite: false
         } , {
             type: 'logarithmic',
-            ceiling: '<%= @stock.graph_max %>',
-            max: '<%= @stock.graph_max %>',
-            min: '<%= @stock.graph_min %>',
+            ceiling: '<%= @graph_max %>',
+            max: '<%= @graph_max %>',
+            min: '<%= @graph_min %>',
             startOnTick: false,
             endOnTick: false,
             opposite: true
         }],
+        xAxis: {
+            min: '<%= @stock.earnings[3].report.to_time.to_i*1000 %>'
+        },
         series: [{
             name: "Price",
-            data: <%= raw @stock.prices  %>
+            data: <%= raw @prices  %>
         } , {
             name: "Earnings",
             data: <%= raw @stock.get_trailing_eps %>,

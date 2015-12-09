@@ -54,6 +54,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-console (0.0.4)
+      capybara
+      rails (>= 3.0)
     capybara-email (2.4.0)
       capybara (~> 2.4)
       mail
@@ -234,6 +237,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.3.5)
   byebug
   capybara
+  capybara-console
   capybara-email
   chartkick
   coffee-rails (~> 4.1.0)

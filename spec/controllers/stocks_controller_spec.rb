@@ -11,28 +11,38 @@ RSpec.describe StocksController, :type => :controller do
     end
 
     context 'new record, no estimize data' do
-      it 'returns @stock with some prices and empty earnings' do
+      it 'returns @stock with some @prices and empty earnings' do
         get :show, {:ticker => 'CRTO'}
-        expect(assigns(:stock).prices).to_not be_empty
+        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to be_empty
+        expect(response).to render_template(:show)
       end
     end
 
     context 'new record, estimize data' do
-      it 'returns @stock with some prices and earnings' do
+      it 'returns @stock with some @prices and earnings' do
         get :show, {:ticker => 'SWKS'}
-        expect(assigns(:stock).prices).to_not be_empty
+        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to_not be_empty
+        expect(response).to render_template(:show)
       end
     end
 
     context 'existing record' do
-      it 'returns @stock with some prices and earnings' do
-        l = FactoryGirl.create(:stock, :with_some_prices, :with_1eps)
-        allow(l).to receive(:update_and_save_prices).and_return( nil )
+      it 'returns @stock with some @prices and earnings' do
+        l = FactoryGirl.create(:stock, :with_1eps)
         get :show, {:ticker => l.ticker}
-        expect(assigns(:stock).prices).to_not be_empty
+        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to_not be_empty
+        expect(response).to render_template(:show)
+      end
+    end
+
+    context 'existing record without splits' do
+      it 'renders show template' do
+        l = FactoryGirl.create(:stock, :with_1eps, {:ticker => 'BRK-A'})
+        get :show, {:ticker => l.ticker}
+        expect(response).to render_template(:show)
       end
     end
   end

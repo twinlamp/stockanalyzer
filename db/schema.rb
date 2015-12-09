@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150929104015) do
+ActiveRecord::Schema.define(version: 20151201130636) do
 
   create_table "earnings", force: :cascade do |t|
     t.integer  "q"
@@ -28,9 +28,9 @@ ActiveRecord::Schema.define(version: 20150929104015) do
 
   create_table "stocks", force: :cascade do |t|
     t.string   "ticker"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text     "prices"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.datetime "last_split_date"
   end
 
   create_table "users", force: :cascade do |t|

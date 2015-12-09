@@ -27,17 +27,17 @@ RSpec.describe Earning, :type => :model do
 
     describe "Earning, .yoy" do
       it 'returns nil if there isnt any earnings date from year before' do
-        l = FactoryGirl.create(:stock, :with_some_prices, :with_3q_earnings)
+        l = FactoryGirl.create(:stock, :with_3q_earnings)
         y = l.earnings.last
         expect(y.yoy).to be_nil
       end
       it 'returns nil if last year ttm < 0' do
-        l = FactoryGirl.create(:stock, :with_negative_1eps, :with_some_prices)
+        l = FactoryGirl.create(:stock, :with_negative_1eps)
         y = l.earnings.last
         expect(y.yoy).to be_nil    
       end
       it 'returns nil if last year ttm = 0' do
-        l = FactoryGirl.create(:stock, :with_some_prices, :with_0eps)
+        l = FactoryGirl.create(:stock, :with_0eps)
         y = l.earnings.last
         expect(y.yoy).to be_nil    
       end

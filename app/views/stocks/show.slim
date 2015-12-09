@@ -1,24 +1,33 @@
 h1.page-header
   p = @stock.ticker
   -if session[:stock_id].nil?
-    = button_to "Delete Stock", stock_path(@stock), method: :delete, data: { confirm: "Are you sure?" },  class: "btn btn-default btn-xs"
+    .row
+      .col-md-1
+        = button_to "Delete Stock", stock_path(@stock), method: :delete, data: { confirm: "Are you sure?" },  class: "btn btn-default btn-xs"
+      -if @split
+        .col-md-1
+          = button_to "Update earnings", stock_path(@stock), params: {split: (@split.after / @split.before)}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
+        .col-md-1
+          = button_to "Ignore split", stock_path(@stock), params: {}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
 .row
+  .col-md-8#highchart
+    = render partial: "shared/highchart"
   .col-md-4
     .row
       .col-md-6
         table.table.table-bordered
           tr
             td Price:
-            td = @stock.prices.last[1].to_f.round(2)
+            td = @prices.last[1].to_f.round(2)
           tr
             td PE:
-            td = @stock.pe.to_f.round(2)
+            td = @pe.to_f.round(2)
           tr
             td YoY(ttm):
-            td #{@stock.yoy_ttm.to_f.round(2)}%
+            td #{@yoy_ttm.to_f.round(2)}%
           tr
             td PEG:
-            td = @stock.peg.to_f.round(2)
+            td = @peg.to_f.round(2)
     .row
       .col-md-12
         table.table.table-striped.text-center#earningstable
@@ -39,5 +48,3 @@ h1.page-header
       .col-md-12
         - if new_stock?
           =button_to 'Save', stocks_path, remote: true, class: "btn btn-default", id: 'save-stock'
-  .col-md-8#highchart
-= render partial: "shared/highchart"

@@ -58,6 +58,7 @@ group :development, :test do
   gem 'ffaker'
   gem 'shoulda-matchers', '2.8.0'
   gem 'capybara'
+  gem 'capybara-console'
   gem 'database_cleaner'
   gem 'capybara-email'
   gem 'poltergeist'

@@ -20,6 +20,5 @@ html
               li
                 =link_to stock.ticker, stock_path(stock.ticker)
         .col-sm-10.col-sm-offset-3.col-md-11.col-md-offset-1.main
+          = render 'shared/messages'
           = yield 
-    p.notice = notice
-    p.alert = alert
