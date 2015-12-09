@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users
-
   get '/stocks/:ticker' => 'stocks#show', as: :stock
   resources :stocks, only: [:create, :destroy, :update]
   resources :earnings, only: [:create, :destroy]
