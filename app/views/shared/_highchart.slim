@@ -16,9 +16,6 @@
                       endOnTick: false,
                       opposite: false
                   }],
-                 xAxis: {
-                      min: '#{ @stock.earnings[3].report.to_time.to_i*1000 }'
-                  },
                   series: [{
                       name: "Price",
                       data: #{ raw @prices }

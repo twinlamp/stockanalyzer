@@ -24,7 +24,7 @@ class Stock < ActiveRecord::Base
 		begin
 			page = a.get("https://www.estimize.com/" + ticker)
 		rescue Mechanize::ResponseCodeError
-			return
+			return []
 		end
 		data = page.search("script").text.scan(/ReleaseCollection\((.*)\)/)[1][0][2..-3].gsub(/\"/,'').gsub(/},{/,'},,,{').split(',,,')
 		hash_data = data.map do |earning|

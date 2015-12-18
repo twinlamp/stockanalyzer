@@ -26,10 +26,6 @@ RSpec.describe Stock, :type => :model do
     end
 
     describe "Stock, .set_earnings" do
-    	it 'does nothing if we have some earnings data already' do
-        	l = FactoryGirl.create(:stock, :with_1eps)
-        	expect{l.set_earnings}.to_not change{ l.earnings.length }
-    	end
     	it 'adds 8 earning items if stock is present at estimize' do
         	l = FactoryGirl.create(:stock, {ticker: 'SWKS'})
         	expect{l.set_earnings}.to change{ l.earnings.length }.by(8)
