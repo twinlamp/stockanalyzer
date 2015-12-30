@@ -24,7 +24,7 @@ $(function () {
             opposite: true
         }],
         xAxis: {
-            min: '<%= @stock.earnings[3].report.to_time.to_i*1000 %>'
+            min: '<%= @stock.get_trailing_eps[0][0] %>'
         },
         series: [{
             name: "Price",

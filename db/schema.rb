@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151209131401) do
+ActiveRecord::Schema.define(version: 20151230133614) do
 
   create_table "earnings", force: :cascade do |t|
     t.integer  "q"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20151209131401) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.datetime "last_split_date"
+    t.integer  "earnings_count"
   end
 
 end

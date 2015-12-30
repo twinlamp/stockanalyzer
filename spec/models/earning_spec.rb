@@ -1,5 +1,5 @@
 require 'rails_helper'
-
+require 'byebug'
 RSpec.describe Earning, :type => :model do
     it 'has a valid factory' do
         expect(build(:earning)).to be_valid
@@ -8,14 +8,16 @@ RSpec.describe Earning, :type => :model do
     it { should validate_presence_of(:eps) }    
     
     it { should validate_presence_of(:report) }    
-    
+
+    it { should validate_uniqueness_of(:report).scoped_to(:stock_id) }   
+
     it { should_not allow_value("2014/April/15000").for(:report) }   
 
     it { should validate_numericality_of(:q).is_less_than_or_equal_to(4) }   
 
-    it { should validate_numericality_of(:y).is_greater_than(0) }
+    it { should validate_uniqueness_of(:q).scoped_to(:y, :stock_id) }   
 
-    it { should validate_numericality_of(:revenue).is_greater_than(0) }
+    it { should validate_numericality_of(:y).is_greater_than(2000) }
 
     describe "Earning, .ttm" do
       it 'returns nil if there is no 3 previous earnings' do

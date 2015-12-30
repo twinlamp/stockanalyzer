@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :earning do
-    association :stock
+    association :stock, factory: :stock
     q { rand(1..4) }
     y { rand(2009..2015) }
     report { rand(5.years).seconds.ago }

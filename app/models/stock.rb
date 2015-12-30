@@ -1,5 +1,6 @@
 class Stock < ActiveRecord::Base
 	has_many :earnings, -> {order(:report)}, inverse_of: :stock, dependent: :destroy
+	attr_readonly :earnings_count
 	validates :ticker, presence: true, uniqueness: true
 	validate :tickerness
 
@@ -12,8 +13,8 @@ class Stock < ActiveRecord::Base
 	end
 
 	def update_earnings
-		if !get_earnings.nil?
-			get_earnings.select{|params| params[:report] > self.earnings.last.report }.each{|params|self.earnings.build(params)}
+		if !get_earnings.empty?
+			get_earnings.select{|params| params[:report].to_date > self.earnings.last.report }.each{|params|self.earnings.build(params)}
 		else
 			[]
 		end
@@ -50,7 +51,14 @@ class Stock < ActiveRecord::Base
 	def tickerness
 		if yahoo.quote([ticker], [:stock_exchange]).stock_exchange == "N/A"
 			errors.add(:ticker, "should be a proper ticker")
+			return false
+		else
+			return true
 		end
+	end
+
+	def mkt_cap
+		yahoo.quotes([self.ticker], [:market_capitalization])[0][:market_capitalization]
 	end
 
 	def yahoo

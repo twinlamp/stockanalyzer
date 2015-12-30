@@ -5,14 +5,19 @@ class ApplicationController < ActionController::Base
   before_action :get_stocks
   before_action :destroy_unsaved_stock
   helper_method :new_stock?
+  rescue_from OpenURI::HTTPError, :with => :error_render_method
 
   def new_stock?
   	!(session[:stock_id].nil?)
   end
 
 private
+  def error_render_method
+    redirect_to root_path, flash: {error: "There was an error retreiving data from yahoo finance."}
+  end
+
   def get_stocks
-  	@stocks = Stock.all.sort_by {|stock| stock.created_at}
+  	@stocks = Stock.order(:ticker)
   end
 
   def calculate_chart
