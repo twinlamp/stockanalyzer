@@ -24,6 +24,5 @@ feature 'create_earnings' do
       click_button 'Add'
       wait_for_ajax
     }.to change{all("[class^='earning-']").size}.by(1)
-    byebug
   end
 end

@@ -56,6 +56,7 @@ gem 'yahoo-finance'
 gem "chartkick"
 gem 'slim'
 gem 'mechanize'
+gem 'httparty'
 
 group :development, :test do
   gem 'rspec-rails'

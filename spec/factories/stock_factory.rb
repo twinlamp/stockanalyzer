@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :stock do
     ticker 'SKX'
+    last_split_date 'Fri, 29 Jan 2000'
     trait :with_random_earnings do
       after(:create) do |stock|
         (0..1).each do |y|
@@ -47,6 +48,16 @@ FactoryGirl.define do
       after(:create) do |stock|
         (1..3).each do |q|
           create(:earning, q: 4 - q, y: Date.today.year, report: Date.today - q*90, eps: 1, revenue: rand((250-20*q)..(400-20*q)), stock: stock)
+        end
+      end
+    end
+    trait :with_3_negative_4_positive_earnings do
+      after(:create) do |stock|
+        (0..3).each do |q|
+          create(:earning, q: 4 - q, y: Date.today.year, report: Date.today - q*90, eps: 1, revenue: rand((250-20*q)..(400-20*q)), stock: stock)
+        end
+        (1..3).each do |q|
+          create(:earning, q: 4 - q, y: Date.today.year - 1, report: Date.today - q*90 - 365, eps: -1, revenue: rand((250-20*q)..(400-20*q)), stock: stock)
         end
       end
     end

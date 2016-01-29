@@ -5,17 +5,13 @@ class ApplicationController < ActionController::Base
   before_action :get_stocks
   before_action :destroy_unsaved_stock
   helper_method :new_stock?
-  rescue_from OpenURI::HTTPError, :with => :error_render_method
+  include Estimize
 
   def new_stock?
-  	!(session[:stock_id].nil?)
+  	!(session[:stock_ticker].nil?)
   end
 
 private
-  def error_render_method
-    redirect_to root_path, flash: {error: "There was an error retreiving data from yahoo finance."}
-  end
-
   def get_stocks
   	@stocks = Stock.order(:ticker)
   end
@@ -23,20 +19,10 @@ private
   def calculate_chart
     quotes = yahoo.historical_quotes(@stock.ticker, {start_date: Date.today - 5.years, end_date: Date.today, period: :daily})
     @prices = quotes.sort_by {|quote| quote.trade_date }.map {|quote| [ quote.trade_date.to_time.to_i*1000, quote.adjusted_close.to_f.round(2) ] }
-    if @stock.earnings.length <= 3 || @stock.get_trailing_eps.empty? || @prices.max_by {|q|q[1]}[1] > @stock.get_trailing_eps.max_by { |q|q[1]}[1]*20
-      @graph_max = (1.2*@prices.max_by {|q|q[1]}[1])/20
-    else
-      @graph_max = 1.2*@stock.get_trailing_eps.max_by { |q|q[1]}[1]
-    end
-
-    if @stock.earnings.length <= 3 || @stock.get_trailing_eps.empty? || @prices.min_by {|q|q[1]}[1] < @stock.get_trailing_eps.min_by { |q|q[1]}[1]*20
-      @graph_min = (@prices.min_by {|q|q[1]}[1])/(1.2*20)
-    else
-      @graph_min = (@stock.get_trailing_eps.min_by { |q|q[1]}[1])/1.2
-    end
-
-    @pe = @prices.last[1]/@stock.earnings.last.ttm if @stock.earnings.length >= 4 && @stock.earnings.last.ttm > 0
-    @yoy_ttm = 100*((@stock.earnings[-1].ttm/@stock.earnings[-5].ttm)-1) if @stock.earnings.length >= 8 && @stock.earnings[-5].ttm > 0
+    @graph_max = (@stock.positive_trailing_eps.empty? || @prices.max_by {|q|q[1]}[1] > @stock.positive_trailing_eps.max_by {|q|q[1]}[1]*20) ? (1.2*@prices.max_by {|q|q[1]}[1])/20 : 1.2*@stock.positive_trailing_eps.max_by {|q|q[1]}[1]
+    @graph_min = (@stock.positive_trailing_eps.empty? || @prices.min_by {|q|q[1]}[1] < @stock.positive_trailing_eps.min_by {|q|q[1]}[1]*20) ? (@prices.min_by {|q|q[1]}[1])/(1.2*20) :  @stock.positive_trailing_eps.min_by {|q|q[1]}[1]/1.2
+    @pe = @prices.last[1]/@stock.earnings.last.ttm if @stock.earnings.size >= 4 && @stock.earnings.last.ttm > 0
+    @yoy_ttm = 100*((@stock.earnings[-1].ttm/@stock.earnings[-5].ttm)-1) if @stock.earnings.size >= 8 && @stock.earnings[-5].ttm > 0
     @peg = @pe/@yoy_ttm if @pe && ( @yoy_ttm.try :nonzero? )
   end
 
@@ -45,7 +31,7 @@ private
   end
 
   def destroy_unsaved_stock
-  	(Stock.try(:destroy, session[:stock_id]) rescue nil) if session[:stock_id]
-  	session[:stock_id] = nil
+  	(Stock.find_by(ticker: session[:stock_ticker]).try(:destroy) rescue nil) if session[:stock_ticker]
+  	session[:stock_ticker] = nil
   end
 end

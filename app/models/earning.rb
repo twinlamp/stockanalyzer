@@ -17,6 +17,10 @@ class Earning < ActiveRecord::Base
     100*((stock.earnings[i].eps/stock.earnings[i-4].eps)-1) if i >= 4 && stock.earnings[i-4].eps > 0
   end
 
+  def to_highchart
+    [self.report.to_time.to_i*1000, self.ttm.round(2)]
+  end
+
   private
   def report_is_valid_date
     errors.add("Report date", "is invalid.") unless (report.try(:to_date) rescue nil)

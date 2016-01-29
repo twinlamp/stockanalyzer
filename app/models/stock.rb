@@ -3,49 +3,16 @@ class Stock < ActiveRecord::Base
 	attr_readonly :earnings_count
 	validates :ticker, presence: true, uniqueness: true
 	validate :tickerness
+	validate :price_data
 
-	def get_trailing_eps
-		earnings[3..-1].map {|e| [e.report.to_time.to_i*1000, e.ttm.round(2)] }.select {|e| e[1] > 0 }
-	end
-
-	def set_earnings
-		get_earnings.each {|params| self.earnings.build(params)}
+	def positive_trailing_eps
+		return [] if self.earnings.length <= 3 
+		self.earnings[3..-1].select{|e|e.ttm > 0}.map{|e|e.to_highchart}
 	end
 
 	def update_earnings
-		if !get_earnings.empty?
-			get_earnings.select{|params| params[:report].to_date > self.earnings.last.report }.each{|params|self.earnings.build(params)}
-		else
-			[]
-		end
-	end
-
-	def get_earnings
-		a = Mechanize.new
-		begin
-			page = a.get("https://www.estimize.com/" + ticker)
-		rescue Mechanize::ResponseCodeError
-			return []
-		end
-		data = page.search("script").text.scan(/ReleaseCollection\((.*)\)/)[1][0][2..-3].gsub(/\"/,'').gsub(/},{/,'},,,{').split(',,,')
-		hash_data = data.map do |earning|
-			hash = {}
-			earning[1..-2].gsub(/,(\D)/, '%%%\1').gsub(/(\D),/, '\1%%%').split('%%%').each do |el|
-				key = el.split(':')[0]
-				value = el.split(':')[1]
-				hash[key] = value
-			end
-			hash
-		end
-		hash_data[0..-2].map do |earning|
-			params = {}
-			params[:q] = earning["name"][2]
-			params[:report] = Time.at(earning["reportsAt"].to_i/1000).to_date
-			params[:y] = earning["name"][-4..-1]
-			params[:revenue] = earning["revenue"]
-			params[:eps] = earning["eps"]
-			params
-		end
+		estimize_earnings = Estimize.get_earnings(self.ticker)
+		estimize_earnings.select{|earning| self.earnings.empty? || earning.report > self.earnings.last.report }.each{|earning| self.earnings << earning }
 	end
 
 	def tickerness
@@ -55,6 +22,19 @@ class Stock < ActiveRecord::Base
 		else
 			return true
 		end
+	end
+
+	def price_data
+		if (yahoo.historical_quotes(ticker).any? rescue nil ).nil?
+			errors.add(:ticker, "no price data on estimize")
+			return false
+		else
+			return true
+		end
+	end
+
+	def new_splits?
+		(yahoo.splits(self.ticker).any? && ( !self.last_split_date || yahoo.splits(self.ticker).last.date > self.last_split_date ))
 	end
 
 	def mkt_cap

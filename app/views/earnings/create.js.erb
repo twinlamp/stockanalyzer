@@ -24,14 +24,14 @@ $(function () {
             opposite: true
         }],
         xAxis: {
-            min: '<%= @stock.get_trailing_eps[0][0] %>'
+            min: '<%= @stock.positive_trailing_eps[0][0] %>'
         },
         series: [{
             name: "Price",
             data: <%= raw @prices  %>
         } , {
             name: "Earnings",
-            data: <%= raw @stock.get_trailing_eps %>,
+            data: <%= raw @stock.positive_trailing_eps %>,
             yAxis: 1,
             type: 'column'
         }]
