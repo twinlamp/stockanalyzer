@@ -30,28 +30,25 @@ RSpec.describe StocksController, :type => :controller do
     end
 
     context 'new record, no estimize data' do
-      it 'returns @stock with some @prices and empty earnings' do
+      it 'returns @stock with empty earnings' do
         get :show, {:ticker => 'CRTO'}
-        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to be_empty
         expect(response).to render_template(:show)
       end
     end
 
     context 'new record, estimize data' do
-      it 'returns @stock with some @prices and earnings' do
+      it 'returns @stock with earnings' do
         get :show, {:ticker => 'SWKS'}
-        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to_not be_empty
         expect(response).to render_template(:show)
       end
     end
 
     context 'existing record' do
-      it 'returns @stock with some @prices and earnings' do
+      it 'returns @stock with and earnings' do
         l = FactoryGirl.create(:stock, :with_1eps)
         get :show, {:ticker => l.ticker}
-        expect(assigns(:prices)).to_not be_empty
         expect(assigns(:stock).earnings).to_not be_empty
         expect(response).to render_template(:show)
       end

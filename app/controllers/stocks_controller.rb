@@ -16,7 +16,6 @@ class StocksController < ApplicationController
       @split = yahoo.splits(@stock.ticker).last 
       flash.now[:alert] = "There is an unaccounted #{@split.before}:#{@split.after} stock split dated #{@split.date}. Press 'Update earnings' button to automatically update earnings or press 'Ignore split' if everything is already fine."
     end
-    calculate_chart
   end
 
   def create

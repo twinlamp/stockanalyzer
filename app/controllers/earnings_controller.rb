@@ -2,7 +2,6 @@ class EarningsController < ApplicationController
   def create
     if @earning = Earning.create(earning_params)
     	@stock = Stock.find(@earning.stock_id)
-      calculate_chart
 			respond_to do |format|
 				format.js { render :layout => false }
 			end
@@ -13,7 +12,6 @@ class EarningsController < ApplicationController
     @earning = Earning.find(params[:id])
     @stock = Stock.find(@earning.stock_id)
     @earning.destroy
-    calculate_chart
 		respond_to do |format|
 			format.js { render :layout => false }
 		end

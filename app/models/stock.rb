@@ -5,14 +5,9 @@ class Stock < ActiveRecord::Base
 	validate :tickerness
 	validate :price_data
 
-	def positive_trailing_eps
-		return [] if self.earnings.length <= 3 
-		self.earnings[3..-1].select{|e|e.ttm > 0}.map{|e|e.to_highchart}
-	end
-
 	def update_earnings
-		estimize_earnings = Estimize.get_earnings(self.ticker)
-		estimize_earnings.select{|earning| self.earnings.empty? || earning.report > self.earnings.last.report }.each{|earning| self.earnings << earning }
+		estimize_earnings = Estimize.get_earnings(ticker)
+		estimize_earnings.select{|earning| earnings.empty? || earning.report > earnings.last.report }.each{|earning| earnings << earning }
 	end
 
 	def tickerness
@@ -24,8 +19,38 @@ class Stock < ActiveRecord::Base
 		end
 	end
 
+	def quotes
+		yahoo.historical_quotes(ticker, {start_date: Date.today - 5.years, end_date: Date.today, period: :daily})
+	end
+
+	def last_trade_price
+		yahoo.quotes([ticker], [:last_trade_price])[0][:last_trade_price].to_f
+	end
+
+	def pe
+		last_trade_price/earnings.last.ttm unless earnings.last.ttm.nil? || earnings.last.ttm < 0
+	end
+
+	def yoy_ttm
+		100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.nil? || earnings[-5].ttm < 0
+	end
+
+	def peg
+    	pe/yoy_ttm if pe && ( yoy_ttm.try :nonzero? )
+	end
+
+	def max_ttm
+		return nil if earnings.length <= 3
+		earnings[3..-1].max_by(&:ttm).ttm
+	end
+
+	def min_ttm
+		return nil if earnings.length <= 3
+		earnings[3..-1].min_by(&:ttm).ttm
+	end
+
 	def price_data
-		if (yahoo.historical_quotes(ticker).any? rescue nil ).nil?
+		if (quotes.any? rescue nil ).nil?
 			errors.add(:ticker, "no price data on estimize")
 			return false
 		else
@@ -34,11 +59,11 @@ class Stock < ActiveRecord::Base
 	end
 
 	def new_splits?
-		(yahoo.splits(self.ticker).any? && ( !self.last_split_date || yahoo.splits(self.ticker).last.date > self.last_split_date ))
+		(yahoo.splits(ticker).any? && ( !self.last_split_date || yahoo.splits(ticker).last.date > last_split_date ))
 	end
 
 	def mkt_cap
-		yahoo.quotes([self.ticker], [:market_capitalization])[0][:market_capitalization]
+		yahoo.quotes([ticker], [:market_capitalization])[0][:market_capitalization]
 	end
 
 	def yahoo

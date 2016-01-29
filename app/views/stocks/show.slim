@@ -21,16 +21,16 @@ h1.page-header
             td = @stock.mkt_cap
           tr
             td Price:
-            td = @prices.last[1].to_f.round(2)
+            td = @stock.last_trade_price.to_f.round(2)
           tr
             td PE:
-            td = @pe.to_f.round(2)
+            td = @stock.pe.to_f.round(2)
           tr
             td YoY(ttm):
-            td #{@yoy_ttm.to_f.round(2)}%
+            td #{@stock.yoy_ttm.to_f.round(2)}%
           tr
             td PEG:
-            td = @peg.to_f.round(2)
+            td = @stock.peg.to_f.round(2)
     .row
       .col-md-12
         table.table.table-striped.text-center#earningstable

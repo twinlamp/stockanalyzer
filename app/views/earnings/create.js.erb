@@ -8,30 +8,30 @@ $(function () {
             },
        yAxis: [{
             type: 'logarithmic',
-            ceiling: '<%= @graph_max*20 %>',
-            max: '<%= @graph_max*20 %>',
-            min: '<%= @graph_min*20 %>',
+            ceiling: '<%= graph_max(@stock)*20 %>',
+            max: '<%= graph_max(@stock)*20 %>',
+            min: '<%= graph_min(@stock)*20 %>',
             startOnTick: false,
             endOnTick: false,
             opposite: false
         } , {
             type: 'logarithmic',
-            ceiling: '<%= @graph_max %>',
-            max: '<%= @graph_max %>',
-            min: '<%= @graph_min %>',
+            ceiling: '<%= graph_max(@stock) %>',
+            max: '<%= graph_max(@stock) %>',
+            min: '<%= graph_min(@stock) %>',
             startOnTick: false,
             endOnTick: false,
             opposite: true
         }],
         xAxis: {
-            min: '<%= @stock.positive_trailing_eps[0][0] %>'
+            min: '<%= highchart_earnings(@stock)[0][0] %>'
         },
         series: [{
             name: "Price",
-            data: <%= raw @prices  %>
+            data: <%= raw highchart_quotes(@stock)  %>
         } , {
             name: "Earnings",
-            data: <%= raw @stock.positive_trailing_eps %>,
+            data: <%= raw highchart_earnings(@stock) %>,
             yAxis: 1,
             type: 'column'
         }]

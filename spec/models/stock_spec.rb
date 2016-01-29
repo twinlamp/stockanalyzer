@@ -13,23 +13,6 @@ RSpec.describe Stock, :type => :model do
 
     it { should have_many(:earnings) }
 
-    describe "Stock, .positive_trailing_eps" do
-      it 'returns empty array if there is only negative numbers' do
-        l = FactoryGirl.create(:stock, :with_negative_1eps)
-        expect(l.positive_trailing_eps).to be_empty
-      end
-
-      it 'returns empty array if there is less than 3 earnings' do
-        l = FactoryGirl.create(:stock, :with_3q_earnings)
-        expect(l.positive_trailing_eps).to be_empty
-      end
-
-      it 'returns only positive ttms' do
-        l = FactoryGirl.create(:stock, :with_3_negative_4_positive_earnings)
-        expect(l.positive_trailing_eps.length).to eq(2)
-      end
-    end
-
     describe "Stock, .update_earnings" do
         it 'adds to stock every earning item released after last one' do
             ary = [{:q=>"1", :report=>"Thu, 16 Jan 2014", :y=>"2014", :revenue=>"505.0", :eps=>"0.67"},
