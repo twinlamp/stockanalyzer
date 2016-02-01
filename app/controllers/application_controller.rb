@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   before_action :get_stocks
   before_action :destroy_unsaved_stock
   helper_method :new_stock?
-  include Estimize
 
   def new_stock?
   	!(session[:stock_ticker].nil?)

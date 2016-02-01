@@ -1,5 +1,5 @@
 $("[class^='earning-']").remove();
-$('#earningstable tbody').prepend("<%= j render partial: 'earnings/earning', collection: @stock.earnings.reverse %>");
+$('#earningstable tbody').prepend("<%= j render partial: 'earnings/earning', collection: @earning.stock.earnings.reverse %>");
 $(function () {
     $('#highchart').highcharts('StockChart', {
        chart: {
@@ -8,30 +8,30 @@ $(function () {
             },
        yAxis: [{
             type: 'logarithmic',
-            ceiling: '<%= graph_max(@stock)*20 %>',
-            max: '<%= graph_max(@stock)*20 %>',
-            min: '<%= graph_min(@stock)*20 %>',
+            ceiling: '<%= graph_max(@earning.stock)*20 %>',
+            max: '<%= graph_max(@earning.stock)*20 %>',
+            min: '<%= graph_min(@earning.stock)*20 %>',
             startOnTick: false,
             endOnTick: false,
             opposite: false
         } , {
             type: 'logarithmic',
-            ceiling: '<%= graph_max(@stock) %>',
-            max: '<%= graph_max(@stock) %>',
-            min: '<%= graph_min(@stock) %>',
+            ceiling: '<%= graph_max(@earning.stock) %>',
+            max: '<%= graph_max(@earning.stock) %>',
+            min: '<%= graph_min(@earning.stock) %>',
             startOnTick: false,
             endOnTick: false,
             opposite: true
         }],
         xAxis: {
-            min: '<%= highchart_earnings(@stock)[0][0] %>'
+            min: '<%= highchart_earnings(@earning.stock)[0][0] %>'
         },
         series: [{
             name: "Price",
-            data: <%= raw highchart_quotes(@stock)  %>
+            data: <%= raw highchart_quotes(@earning.stock)  %>
         } , {
             name: "Earnings",
-            data: <%= raw highchart_earnings(@stock) %>,
+            data: <%= raw highchart_earnings(@earning.stock) %>,
             yAxis: 1,
             type: 'column'
         }]

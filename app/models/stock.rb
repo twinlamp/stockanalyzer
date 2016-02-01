@@ -10,7 +10,7 @@ class Stock < ActiveRecord::Base
   end
 
   def has_price_data
-    errors.add(:ticker, "no price data on estimize") if (quotes.any? rescue nil ).nil?
+    errors.add(:ticker, "no price data on yahoo finance") if (quotes.any? rescue nil ).nil?
   end
 
   def quotes
@@ -22,15 +22,15 @@ class Stock < ActiveRecord::Base
   end
 
   def pe
-    @pe ||= last_trade_price/earnings.last.ttm unless earnings.last.ttm.nil? || earnings.last.ttm < 0
+    @pe ||= last_trade_price/earnings.last.ttm unless earnings.last.ttm.to_i < 0
   end
 
   def yoy_ttm
-    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.nil? || earnings[-5].ttm < 0
+    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.to_i < 0
   end
 
   def peg
-    @peg ||= pe/yoy_ttm if pe && ( yoy_ttm.try :nonzero? )
+    @peg ||= pe/yoy_ttm if pe && (yoy_ttm.to_i != 0)
   end
 
   def max_ttm

@@ -7,7 +7,7 @@ RSpec.describe StocksController, :type => :controller do
       it 'redirects to root page and flashes an error' do
         get :show, {:ticker => 'YYYY'}
         expect(response).to redirect_to root_path
-        expect(controller).to set_flash[:error].to(/Ticker is not valid/)
+        expect(controller).to set_flash[:error].to(/Ticker is not valid or no price data available./)
       end
       it 'does not create new record' do
         expect {
@@ -20,7 +20,7 @@ RSpec.describe StocksController, :type => :controller do
       it 'redirects to root page and flashes an error' do
         get :show, {:ticker => 'ACT'}
         expect(response).to redirect_to root_path
-        expect(controller).to set_flash[:error].to(/No price data available/)
+        expect(controller).to set_flash[:error].to(/Ticker is not valid or no price data available./)
       end
       it 'does not create new record' do
         expect {

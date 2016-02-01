@@ -3,12 +3,10 @@ class StocksController < ApplicationController
   skip_before_action :destroy_unsaved_stock, only: :create
 
   def show
+    redirect_to root_path, flash: {error: "Ticker is not valid or no price data available."}  and return false if !@stock.valid?
     updates = @stock.update_earnings
-    updates.each do |earning|
-      messages ||= []
-      messages << "Earning info from #{earning.report} report added. Please remove it now if it is unnecessary."
-    end
-    flash.now[:info] = messages.join("<br/>").html_safe if (defined?(messages) && messages.any?)
+    messages = updates.map{|earning| "Earning info from #{earning.report} report added. Please remove it now if it is unnecessary."}
+    flash.now[:info] = messages.join("<br/>").html_safe if messages.any?
     @stock.save if @stock.changed?
     if @stock.new_splits.any?
       @split = @stock.new_splits.last
@@ -40,8 +38,7 @@ class StocksController < ApplicationController
 
 private
   def set_stock
-    @stock = Stock.includes(:earnings).find_by(ticker: params[:ticker].upcase) || Stock.new(ticker: params[:ticker].upcase)
-    redirect_to root_path if !@stock.valid?
+    @stock = Stock.includes(:earnings).find_or_initialize_by(ticker: params[:ticker].upcase)
     if @stock.new_record?
       @stock.last_split_date = Date.today
       session[:stock_ticker] = @stock.ticker
