@@ -1,7 +1,5 @@
 class StocksController < ApplicationController
   before_action :set_stock, only: :show
-  before_action :check_tickerness, only: :show
-  before_action :check_price_data, only: :show
   skip_before_action :destroy_unsaved_stock, only: :create
 
   def show
@@ -12,8 +10,8 @@ class StocksController < ApplicationController
     end
     flash.now[:info] = messages.join("<br/>").html_safe if (defined?(messages) && messages.any?)
     @stock.save if @stock.changed?
-    if @stock.new_splits?
-      @split = yahoo.splits(@stock.ticker).last 
+    if @stock.new_splits.any?
+      @split = @stock.new_splits.last
       flash.now[:alert] = "There is an unaccounted #{@split.before}:#{@split.after} stock split dated #{@split.date}. Press 'Update earnings' button to automatically update earnings or press 'Ignore split' if everything is already fine."
     end
   end
@@ -41,16 +39,9 @@ class StocksController < ApplicationController
   end
 
 private
-  def check_tickerness
-    redirect_to root_path, flash: {error: "Ticker is not valid."} if !@stock.tickerness
-  end
-
-  def check_price_data
-    redirect_to root_path, flash: {error: "No price data available."} if !@stock.price_data
-  end
-
   def set_stock
     @stock = Stock.includes(:earnings).find_by(ticker: params[:ticker].upcase) || Stock.new(ticker: params[:ticker].upcase)
+    redirect_to root_path if !@stock.valid?
     if @stock.new_record?
       @stock.last_split_date = Date.today
       session[:stock_ticker] = @stock.ticker
