@@ -9,12 +9,11 @@ module Estimize
     page = self.get("https://www.estimize.com/" + ticker)
     parsed = Nokogiri::HTML(page.body)
     return [] if page.code == 404
-    data = parsed.search("script").text.scan(/ReleaseCollection\((.*)\)/)[1][0][2..-3].gsub(/\"/,'').gsub(/},{/,'},,,{').split(',,,')
+    data = parsed.search("script").text.scan(/"releases":"(.*)","allEstimates":"/)[0][0].gsub(/\"/,'').gsub(/},{/,'},,,{').gsub(/\\/,'').split(',,,')
     hash_data = data.map do |earning|
       hash = {}
-      earning[1..-2].gsub(/,(\D)/, '%%%\1').gsub(/(\D),/, '\1%%%').split('%%%').each do |el|
-        key = el.split(':')[0]
-        value = el.split(':')[1]
+      earning[2..-2].gsub(/,(\D)/, '%%%\1').gsub(/(\D),/, '\1%%%').split('%%%').each do |el|
+        key, value = el.split(':')
         hash[key] = value
       end
       hash
