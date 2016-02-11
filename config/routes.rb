@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get '/stocks/:ticker' => 'stocks#show', as: :stock
   resources :stocks, only: [:create, :destroy, :update]
   resources :earnings, only: [:create, :destroy]
+  resources :notes, only: [:create, :destroy, :update]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

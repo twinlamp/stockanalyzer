@@ -9,7 +9,6 @@ module ApplicationHelper
   end
 
   def graph_max(stock)
-    byebug
     if stock.max_ttm.to_i <= 0 || stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f > stock.max_ttm*20
       (1.2*stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f)/20
     else

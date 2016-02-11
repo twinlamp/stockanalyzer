@@ -22,11 +22,11 @@ class Stock < ActiveRecord::Base
   end
 
   def pe
-    @pe ||= last_trade_price/earnings.last.ttm unless earnings.last.ttm.to_i < 0
+    @pe ||= last_trade_price/earnings.last.ttm unless earnings.last.ttm.to_i <= 0
   end
 
   def yoy_ttm
-    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.to_i < 0
+    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.to_i <= 0
   end
 
   def peg
@@ -52,6 +52,6 @@ class Stock < ActiveRecord::Base
   end
 
   def yahoo
-    @yahoo ||= YahooFinance::Client.new
+    yahoo ||= YahooFinance::Client.new
   end
 end
