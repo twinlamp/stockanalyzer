@@ -1,5 +1,6 @@
 class Stock < ActiveRecord::Base
   has_many :earnings, -> {order(:report)}, inverse_of: :stock, dependent: :destroy
+  has_many :notes
   attr_readonly :earnings_count
   validates :ticker, presence: true, uniqueness: true
   validate :has_price_data

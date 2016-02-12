@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203122248) do
+ActiveRecord::Schema.define(version: 20160212122359) do
 
   create_table "earnings", force: :cascade do |t|
     t.integer  "q"
@@ -27,10 +27,12 @@ ActiveRecord::Schema.define(version: 20160203122248) do
   add_index "earnings", ["stock_id"], name: "index_earnings_on_stock_id"
 
   create_table "notes", force: :cascade do |t|
-    t.string  "title"
-    t.text    "body"
-    t.integer "stock_id"
-    t.integer "earning_id"
+    t.string   "title"
+    t.text     "body"
+    t.integer  "stock_id"
+    t.integer  "earning_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "stocks", force: :cascade do |t|

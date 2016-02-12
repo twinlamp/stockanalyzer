@@ -23,4 +23,8 @@ module ApplicationHelper
       stock.min_ttm/1.2
     end
   end
+
+  def q_y(earning)
+    "#{earning.q}Q #{earning.y}" if earning.q
+  end
 end

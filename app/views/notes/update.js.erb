@@ -1,0 +1,2 @@
+$(".panel-heading#heading<%= @note.id %>").parent().replaceWith("<%= j render 'notes/note', note: @note %>");
+$('#myNoteModal<%= @note.id %>').modal('hide');

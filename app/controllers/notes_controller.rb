@@ -7,6 +7,13 @@ class NotesController < ApplicationController
     end
   end
 
+  def edit
+    @note = Note.find(params[:id])
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+
   def update
     @note = Note.find(params[:id])
     if @note.update_attributes(note_params)

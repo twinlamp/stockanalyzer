@@ -51,3 +51,23 @@ h1.page-header
       .col-md-12
         - if new_stock?
           =button_to 'Save', stocks_path, remote: true, class: "btn btn-default", id: 'save-stock'
+- if !new_stock?
+  h3 Notes
+  hr
+  .panel-group#accordion role="tablist" aria-multiselectable="true"
+    = render partial: "notes/note", collection: @stock.notes.reverse
+  hr
+  button.btn.btn-default.btn-lg data-target="#myNoteModal" data-toggle="modal" type="button" 
+    | Add new note
+
+
+#myNoteModal.modal.fade aria-labelledby="myNoteModalLabel" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      = render partial: "notes/form", locals: {note: Note.new}
+
+-@stock.notes.each do |note|
+  .modal.fade id="myNoteModal#{note.id}" aria-labelledby="myNoteModalLabel#{note.id}" role="dialog" tabindex="-1" 
+    .modal-dialog role="document" 
+      .modal-content
+        = render partial: "notes/form", locals: {note: note}

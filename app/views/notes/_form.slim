@@ -1,0 +1,19 @@
+= form_for(note, remote: true) do |f|
+  .modal-header
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      span aria-hidden="true"  &times;
+    h4.modal-title id="myNoteModalLabel#{note.id}" Note form
+  .modal-body
+    .form-group
+      = f.label :title
+      = f.text_field :title, class: 'form-control'
+    .form-group
+      = f.label :earning
+      = f.select(:earning_id, options_for_select(@stock.earnings.map{|e|[q_y(e),e.id]}), { include_blank: true }, {class: 'form-control'})
+    .form-group
+      = f.label :body
+      = f.cktext_area :body, class: 'form-control', id: "note_body#{note.id}"
+    = f.hidden_field :stock_id, value: @stock.id, class: 'form-control'
+  .modal-footer
+    button.btn.btn-default data-dismiss="modal" type="button"  Close
+    = f.submit "Save note", class: "btn btn-primary"

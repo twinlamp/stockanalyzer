@@ -55,8 +55,8 @@ gem 'bootstrap-sass', '~> 3.3.5'
 gem 'yahoo-finance'
 gem "chartkick"
 gem 'slim'
-gem 'mechanize'
 gem 'httparty'
+gem 'ckeditor'
 
 group :development, :test do
   gem 'rspec-rails'

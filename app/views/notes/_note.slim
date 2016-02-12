@@ -1,0 +1,17 @@
+.panel.panel-default
+  .panel-heading role="tab" id="heading#{note.id}"
+    .row.panel-title
+      .col-md-10
+        a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse#{note.id}" aria-expanded="true" aria-controls="collapse#{note.id}"
+          = note.title
+      .col-md-2
+        = note.created_at.to_date
+        .btn-group.pull-right role="group" aria-label="control"
+          button.btn.btn-default.btn-xs id="myNoteButton#{note.id}" data-target="#myNoteModal#{note.id}" data-toggle="modal" type="button" 
+            span.glyphicon.glyphicon-edit[aria-hidden="true"]
+          = link_to note_path(note), method: :delete, remote: true, class: "btn btn-default btn-xs", role: "button", data: {confirm: "Are you sure?"}
+            span.glyphicon.glyphicon-remove[aria-hidden="true"]
+  .panel-collapse.collapse role="tabpanel" aria-labelledby="heading#{note.id}" id="collapse#{note.id}"
+    .panel-body
+      = note.body.html_safe    
+    
