@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   helper_method :new_stock?
 
   def new_stock?
-  	!(session[:stock_ticker].nil?)
+  	!!session[:stock_ticker]
   end
 
 private

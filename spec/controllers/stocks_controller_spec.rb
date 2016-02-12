@@ -43,6 +43,10 @@ RSpec.describe StocksController, :type => :controller do
         expect(assigns(:stock).earnings).to_not be_empty
         expect(response).to render_template(:show)
       end
+      it 'does not flash earning message' do
+        get :show, {:ticker => 'SWKS'}
+        expect(flash.now[:info]).to be_nil
+      end        
     end
 
     context 'existing record' do
