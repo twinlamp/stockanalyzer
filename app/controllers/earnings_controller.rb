@@ -1,18 +1,13 @@
 class EarningsController < ApplicationController
+
   def create
-    if @earning = Earning.create(earning_params)
-      respond_to do |format|
-        format.js { render :layout => false }
-      end
-    end
+    @earning = Earning.new(earning_params)
+    render layout: false if @earning.save
   end
 
   def destroy
     @earning = Earning.find(params[:id])
-    @earning.destroy
-    respond_to do |format|
-      format.js { render :layout => false }
-    end
+    render layout: false if @earning.destroy
   end
 
   private

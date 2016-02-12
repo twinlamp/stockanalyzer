@@ -1,34 +1,18 @@
 class NotesController < ApplicationController
+  
   def create
-    if @note = Note.create(note_params)
-      respond_to do |format|
-        format.js { render :layout => false }
-      end
-    end
-  end
-
-  def edit
-    @note = Note.find(params[:id])
-    respond_to do |format|
-      format.js { render :layout => false }
-    end
+    @note = Note.new(note_params)
+    render layout: false if @note.save
   end
 
   def update
     @note = Note.find(params[:id])
-    if @note.update_attributes(note_params)
-      respond_to do |format|
-        format.js { render :layout => false }
-      end
-    end
+    render layout: false if @note.update_attributes(note_params)
   end
 
   def destroy
     @note = Note.find(params[:id])
-    @note.destroy
-    respond_to do |format|
-      format.js { render :layout => false }
-    end
+    render layout: false if @note.destroy
   end
 
   private

@@ -2,3 +2,4 @@ $('#save-stock').hide();
 $('#earningstable tbody tr:last-child').after("<%= j render partial: 'earnings/form', locals: { stock: @stock } %>");
 $('th:last-child').show();
 $('td:last-child').show();
+$('#current_stock').after("<%= j render partial: 'notes/note_block' %>");

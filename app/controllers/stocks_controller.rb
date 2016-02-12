@@ -17,9 +17,7 @@ class StocksController < ApplicationController
   def create
     @stock = Stock.find_by(ticker: session[:stock_ticker])
     session[:stock_ticker] = nil
-    respond_to do |format|
-      format.js { render :layout => false }
-    end
+    render layout: false
   end
 
   def destroy
@@ -36,12 +34,12 @@ class StocksController < ApplicationController
     redirect_to(:back)
   end
 
-private
-  def set_stock
-    @stock = Stock.includes(:earnings).find_or_initialize_by(ticker: params[:ticker].upcase)
-    if @stock.new_record?
-      @stock.last_split_date = Date.today
-      session[:stock_ticker] = @stock.ticker
-    end
-  end 
+  private
+    def set_stock
+      @stock = Stock.includes(:earnings).find_or_initialize_by(ticker: params[:ticker].upcase)
+      if @stock.new_record?
+        @stock.last_split_date = Date.today
+        session[:stock_ticker] = @stock.ticker
+      end
+    end 
 end

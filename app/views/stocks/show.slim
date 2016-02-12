@@ -9,7 +9,7 @@ h1.page-header
           = button_to "Update earnings", stock_path(@stock), params: {split: (@split.after / @split.before)}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
         .col-md-1
           = button_to "Ignore split", stock_path(@stock), params: {}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
-.row
+.row#current_stock
   .col-md-8#highchart
     = render partial: "shared/highchart"
   .col-md-4
@@ -52,22 +52,4 @@ h1.page-header
         - if new_stock?
           =button_to 'Save', stocks_path, remote: true, class: "btn btn-default", id: 'save-stock'
 - if !new_stock?
-  h3 Notes
-  hr
-  .panel-group#accordion role="tablist" aria-multiselectable="true"
-    = render partial: "notes/note", collection: @stock.notes.reverse
-  hr
-  button.btn.btn-default.btn-lg data-target="#myNoteModal" data-toggle="modal" type="button" 
-    | Add new note
-
-
-#myNoteModal.modal.fade aria-labelledby="myNoteModalLabel" role="dialog" tabindex="-1" 
-  .modal-dialog role="document" 
-    .modal-content
-      = render partial: "notes/form", locals: {note: Note.new}
-
--@stock.notes.each do |note|
-  .modal.fade id="myNoteModal#{note.id}" aria-labelledby="myNoteModalLabel#{note.id}" role="dialog" tabindex="-1" 
-    .modal-dialog role="document" 
-      .modal-content
-        = render partial: "notes/form", locals: {note: note}
+  = render partial: "notes/note_block"
