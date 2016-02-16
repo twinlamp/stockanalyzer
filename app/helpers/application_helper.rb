@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def graph_max(stock)
-    if stock.max_ttm.to_i <= 0 || stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f > stock.max_ttm*20
+    if stock.max_ttm.to_f <= 0 || stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f > stock.max_ttm*20
       (1.2*stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f)/20
     else
       1.2*stock.max_ttm
@@ -17,7 +17,7 @@ module ApplicationHelper
   end
 
   def graph_min(stock)
-    if stock.min_ttm.to_i <= 0 || stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f < stock.min_ttm*20
+    if stock.min_ttm.to_f <= 0 || stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f < stock.min_ttm*20
       stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f/(1.2*20)
     else
       stock.min_ttm/1.2

@@ -3,8 +3,8 @@
     h3 Notes
     hr
     .panel-group#accordion role="tablist" aria-multiselectable="true"
-      = render partial: "notes/note", collection: @stock.notes.reverse
+      = render partial: "notes/note", collection: stock.notes.reverse
     hr
     button.btn.btn-default.btn-lg data-target="#myNoteModal" data-toggle="modal" type="button" 
       | Add new note
-    = render partial: "notes/form", collection: (@stock.notes.reverse << Note.new), as: :note
+    = render partial: "notes/form", collection: (stock.notes.reverse << Note.new), locals: {stock: stock}, as: :note

@@ -1,2 +1,3 @@
 $('.panel-group').prepend("<%= j render 'notes/note', note: @note %>");
+$("button[data-target='#myNoteModal']").after("<%= j render 'notes/form', note: @note, stock: @note.stock %>");
 $('#myNoteModal').modal('hide');

@@ -52,4 +52,4 @@ h1.page-header
         - if new_stock?
           =button_to 'Save', stocks_path, remote: true, class: "btn btn-default", id: 'save-stock'
 - if !new_stock?
-  = render partial: "notes/note_block"
+  = render partial: "notes/note_block", locals: { stock: @stock }

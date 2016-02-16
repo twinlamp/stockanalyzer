@@ -23,15 +23,15 @@ class Stock < ActiveRecord::Base
   end
 
   def pe
-    @pe ||= last_trade_price/earnings.last.ttm unless earnings.last.ttm.to_i <= 0
+    @pe ||= last_trade_price/earnings.last.ttm if earnings.last.try(:ttm).to_f > 0
   end
 
   def yoy_ttm
-    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) unless earnings[-5].ttm.to_i <= 0
+    @yoy_ttm ||= 100*((earnings[-1].ttm/earnings[-5].ttm)-1) if earnings[-5].try(:ttm).to_f > 0
   end
 
   def peg
-    @peg ||= pe/yoy_ttm if pe && (yoy_ttm.to_i != 0)
+    @peg ||= pe/yoy_ttm if pe && (yoy_ttm.to_f != 0)
   end
 
   def max_ttm

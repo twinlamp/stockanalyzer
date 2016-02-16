@@ -1,5 +1,7 @@
 require 'rails_helper'
-
+RSpec.configure do |config|
+  config.render_views
+end
 RSpec.describe StocksController, :type => :controller do
 
   describe "GET show" do
