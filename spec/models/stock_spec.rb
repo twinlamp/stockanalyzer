@@ -26,7 +26,8 @@ RSpec.describe Stock, :type => :model do
             l = FactoryGirl.create(:stock, {ticker: 'SWKS'})
             l.earnings << FactoryGirl.create(:earning, q: 1, y: 2015, report:"Thu, 22 Jan 2015", eps: 1.26, revenue: 805.5)
             allow(Estimize).to receive(:get_earnings).and_return(ary)
-            expect{l.update_earnings}.to change{ l.earnings.length }.by(3)
+            l.update_earnings
+            expect(l.earnings.length).to eq(4)
         end
         it 'adds to new stock every available earning item' do
             ary = [{:q=>"1", :report=>"Thu, 16 Jan 2014", :y=>"2014", :revenue=>"505.0", :eps=>"0.67"},
@@ -38,8 +39,8 @@ RSpec.describe Stock, :type => :model do
                     {:q=>"3", :report=>"Thu, 23 Jul 2015", :y=>"2015", :revenue=>"810.0", :eps=>"1.34"},
                     {:q=>"4", :report=>"Thu, 05 Nov 2015", :y=>"2015", :revenue=>"880.8", :eps=>"1.52"}].map {|e| Earning.new(e)}
             l = FactoryGirl.create(:stock, {ticker: 'SWKS'})
-            allow(Estimize).to receive(:get_earnings).and_return(ary)
-            expect{l.update_earnings}.to change{ l.earnings.length }.by(8)
+            l.update_earnings
+            expect(l.earnings.length).to eq(8)
         end
         it 'returns empty array if .get_earnings is empty' do
             ary = []

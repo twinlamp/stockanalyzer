@@ -7,9 +7,8 @@ feature 'destroy_notes' do
     stock = FactoryGirl.create(:stock, :with_random_earnings, {ticker: 'AMBA'})
     stock.notes.create([attributes_for(:note),attributes_for(:note)])
     visit stock_path(ticker: 'AMBA')
-    expect {
-      all('.panel-group > .panel-default').first.find(".btn-xs[data-method='delete']").click
-      wait_for_ajax
-    }.to change{all('.panel-group > .panel-default').size}.by(-1)
+    all('.panel-group > .panel-default').first.find(".btn-xs[data-method='delete']").click
+    wait_for_ajax
+    expect(all('.panel-group > .panel-default').size).to eq(1)
   end
 end

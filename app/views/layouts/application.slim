@@ -19,6 +19,13 @@ html
            return false;
         });
       });
+    - if Rails.env.test?
+      /! For proper Capybara testing
+      css:
+        .modal.fade .modal-dialog { 
+          transition: inherit;
+          -webkit-transition: inherit;
+        }
   body
     = render "layouts/navbar"
     .container-fluid

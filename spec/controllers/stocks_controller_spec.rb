@@ -1,9 +1,7 @@
 require 'rails_helper'
-RSpec.configure do |config|
-  config.render_views
-end
-RSpec.describe StocksController, :type => :controller do
 
+RSpec.describe StocksController, :type => :controller do
+render_views
   describe "GET show" do
     context 'invalid ticker' do
       it 'redirects to root page and flashes an error' do
@@ -12,9 +10,8 @@ RSpec.describe StocksController, :type => :controller do
         expect(controller).to set_flash[:error].to(/Ticker is not valid or no price data available./)
       end
       it 'does not create new record' do
-        expect {
-          get :show, {:ticker => 'YYYY'}
-        }.to_not change{Stock.count}
+        get :show, {:ticker => 'YYYY'}
+        expect(Stock.count).to eq(0)
       end
     end
 
@@ -25,9 +22,8 @@ RSpec.describe StocksController, :type => :controller do
         expect(controller).to set_flash[:error].to(/Ticker is not valid or no price data available./)
       end
       it 'does not create new record' do
-        expect {
-          get :show, {:ticker => 'ACT'}
-        }.to_not change{Stock.count}
+        get :show, {:ticker => 'ACT'}
+        expect(Stock.count).to eq(0)
       end
     end
 
@@ -81,9 +77,8 @@ RSpec.describe StocksController, :type => :controller do
   describe "POST create" do
     it "sets session[:stock_ticker] to nil" do
       get :show, {:ticker => 'SWKS'}
-      expect {
-        xhr :post, :create
-      }.to change{session[:stock_ticker]}.to(nil)
+      xhr :post, :create
+      expect(session[:stock_ticker]).to be_nil
     end
   end
 
@@ -91,9 +86,8 @@ RSpec.describe StocksController, :type => :controller do
     it "removes record" do
       l = FactoryGirl.create(:stock, {:ticker => 'AAPL'})
       get :show, {:ticker => l.ticker}
-      expect {
-        xhr :delete, :destroy, id: l.id
-      }.to change{Stock.count}.by(-1)
+      xhr :delete, :destroy, id: l.id
+      expect(Stock.count).to eq(0)
     end
     it "redirects to root" do
       l = FactoryGirl.create(:stock, {:ticker => 'AAPL'})
@@ -114,10 +108,9 @@ RSpec.describe StocksController, :type => :controller do
         expect(response).to redirect_to "where_i_came_from"
       end
       it 'sets last split date to Date.today' do
-        expect {
-          xhr :patch, :update, id: @stock.id
-          @stock.reload
-        }.to change{@stock.last_split_date}.to(Date.today)
+        xhr :patch, :update, id: @stock.id
+        @stock.reload
+        expect(@stock.last_split_date).to eq(Date.today)
       end
       it 'does not change earnings' do
         xhr :patch, :update, id: @stock.id
@@ -130,10 +123,9 @@ RSpec.describe StocksController, :type => :controller do
         expect(response).to redirect_to "where_i_came_from"
       end
       it 'sets last split date to Date.today' do
-        expect {
-          xhr :patch, :update, id: @stock.id, split: 2/1
-          @stock.reload
-        }.to change{@stock.last_split_date}.to(Date.today)
+        xhr :patch, :update, id: @stock.id, split: 2/1
+        @stock.reload
+        expect(@stock.last_split_date).to eq(Date.today)
       end
       it 'does not change earnings' do
         xhr :patch, :update, id: @stock.id, split: 2/1
