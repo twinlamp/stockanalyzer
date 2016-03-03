@@ -1,6 +1,6 @@
 h1.page-header
   p = @stock.ticker
-  -if session[:stock_id].nil?
+  -if session[:stock_ticker].nil?
     .row
       .col-md-1
         = button_to "Delete Stock", stock_path(@stock), method: :delete, data: { confirm: "Are you sure?" },  class: "btn btn-default btn-xs"
@@ -37,11 +37,11 @@ h1.page-header
           thead
             tr
               th.col-md-2.text-center Date
-              th.col-md-2.text-center[colspan="2"] Qtr
+              th.col-md-3.text-center[colspan="2"] Qtr
               th.col-md-2.text-center Revenue
-              th.col-md-2.text-center EPS
-              th.col-md-2.text-center TTM
-              th.col-md-1.text-center YOY(q)
+              th.col-md-1.text-center EPS
+              th.col-md-1.text-center TTM
+              th.col-md-2.text-center YOY(q)
               th.col-md-1.text-center[style="#{'display:none' if new_stock?}"]
           tbody
             = render partial: "earnings/earning", collection: @stock.earnings.reverse

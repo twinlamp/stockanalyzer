@@ -5,7 +5,7 @@
         a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse#{note.id}" aria-expanded="true" aria-controls="collapse#{note.id}"
           = note.title
       .col-md-2
-        = note.created_at.to_date
+        = note.happened_at
         .btn-group.pull-right role="group" aria-label="control"
           button.btn.btn-default.btn-xs id="myNoteButton#{note.id}" data-target="#myNoteModal#{note.id}" data-toggle="modal" type="button" 
             span.glyphicon.glyphicon-edit[aria-hidden="true"]

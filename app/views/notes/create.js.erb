@@ -1,3 +1,6 @@
 $('.panel-group').prepend("<%= j render 'notes/note', note: @note %>");
 $("button[data-target='#myNoteModal']").after("<%= j render 'notes/form', note: @note, stock: @note.stock %>");
+$('#myNoteModal').find('#note_title').val('')
+$('#myNoteModal').find('#note_happened_at').val('')
+CKEDITOR.instances.note_body.setData('')
 $('#myNoteModal').modal('hide');

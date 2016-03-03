@@ -5,7 +5,9 @@ module ApplicationHelper
 	end
 
   def highchart_earnings(stock)
-    stock.earnings.length >= 4 ? stock.earnings[3..-1].select{|e|e.ttm > 0}.map{|e|e.to_highchart} : 'null'
+    earnings = stock.earnings.length >= 4 ? stock.earnings[3..-1].select{|e|e.ttm > 0}.map{|e|e.to_highchart} : 'null'
+    earnings = 'null' if earnings.length == 0
+    earnings
   end
 
   def graph_max(stock)

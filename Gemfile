@@ -57,6 +57,7 @@ gem "chartkick"
 gem 'slim'
 gem 'httparty'
 gem 'ckeditor'
+gem 'bootstrap-datepicker-rails'
 
 group :development, :test do
   gem 'rspec-rails'

@@ -8,6 +8,7 @@ feature 'update after create note' do
     visit stock_path(ticker: 'AMBA')
     click_button 'Add new note'
     fill_in 'note_title', :with => 'test123'
+    fill_in 'note_happened_at', :with => '2010-01-01'
     fill_in_ckeditor 'note_body', :with => 'test123'
     click_button 'Save note'
     wait_for_ajax

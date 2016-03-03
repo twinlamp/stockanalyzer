@@ -1,11 +1,9 @@
 tr
   = form_for(Earning.new, remote: true) do |f|
-    td.col-md-2 = f.text_field :report, class: 'form-control'
-    td.col-md-1 = f.text_field :q, class: 'form-control'
-    td.col-md-1 = f.text_field :y, class: 'form-control'
+    td.col-md-2 = f.text_field :report, class: 'form-control', data: { "provide" => 'datepicker', 'date-format' => "yyyy-mm-dd" }
+    td.col-md-2 = f.select :q, [['1Q',1],['2Q',2],['3Q',3],['4Q',4]], {}, {class: 'form-control'}
+    td.col-md-2 = f.select :y, ((Date.today.year - 10)..(Date.today.year + 1)).to_a.map{|y|["'#{y.to_s[2..3]}", y]}.reverse, {}, {class: 'form-control'}
     td.col-md-2 = f.text_field :revenue, class: 'form-control'
     td.col-md-2 = f.text_field :eps, class: 'form-control'
     td.col-md-2 = f.submit "Add earning", class: "btn btn-default"
-    td.col-md-1
-    td.col-md-1
     = f.hidden_field :stock_id, value: @stock.id, class: 'form-control'
