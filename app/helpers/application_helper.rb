@@ -11,19 +11,15 @@ module ApplicationHelper
   end
 
   def graph_max(stock)
-    if stock.max_ttm.to_f <= 0 || stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f > stock.max_ttm*20
-      (1.2*stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f)/20
-    else
-      1.2*stock.max_ttm
-    end
+    max_quote = stock.quotes.max_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f
+    max_ttm = stock.max_positive_ttm
+    max_ttm && max_quote < max_ttm*20 ? 1.2*max_ttm : 1.2*max_quote/20
   end
 
   def graph_min(stock)
-    if stock.min_ttm.to_f <= 0 || stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f < stock.min_ttm*20
-      stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f/(1.2*20)
-    else
-      stock.min_ttm/1.2
-    end
+    min_quote = stock.quotes.min_by{|q|q.adjusted_close.to_f}.adjusted_close.to_f
+    min_ttm = stock.min_positive_ttm
+    min_ttm && min_quote > min_ttm*20 ? min_ttm/1.2 : min_quote/(1.2*20)
   end
 
   def q_y(earning)

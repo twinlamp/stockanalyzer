@@ -34,14 +34,12 @@ class Stock < ActiveRecord::Base
     @peg ||= pe/yoy_ttm if pe && (yoy_ttm.to_f != 0)
   end
 
-  def max_ttm
-    return nil if earnings.length <= 3
-    earnings[3..-1].max_by(&:ttm).ttm
-   end
+  def max_positive_ttm
+    earnings.map{|e|e.ttm.to_f}.select{|ttm|ttm > 0}.max
+  end
 
-  def min_ttm
-    return nil if earnings.length <= 3
-    earnings[3..-1].min_by(&:ttm).ttm
+  def min_positive_ttm
+    earnings.map{|e|e.ttm.to_f}.select{|ttm|ttm > 0}.min
   end
 
   def new_splits
