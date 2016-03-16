@@ -1,1 +1,7 @@
 p Please enter ticker in search form or choose ticker from sidebar.
+.row
+  .col-md-12
+    h3 Last notes
+    hr
+    .panel-group#accordion role="tablist" aria-multiselectable="true"
+    	= render partial: "notes/note", collection: Note.order(happened_at: :desc).limit(10)
