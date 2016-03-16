@@ -4,7 +4,7 @@
       .col-md-10
         a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse#{note.id}" aria-expanded="true" aria-controls="collapse#{note.id}"
           = note.title
-      - if params[:controller] == 'stocks'
+      - if ['stocks', 'notes'].include?(params[:controller])
         .col-md-2
           = note.happened_at
           .btn-group.pull-right role="group" aria-label="control"
