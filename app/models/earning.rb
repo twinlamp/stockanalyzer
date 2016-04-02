@@ -2,6 +2,7 @@ class Earning < ActiveRecord::Base
   belongs_to :stock, inverse_of: :earnings, counter_cache: true
   validates :eps, presence: true
   validates :report, presence: true, uniqueness: {scope: :stock_id}
+  validates :stock, presence: true
   validate :report_is_valid_date
   validates :q, numericality: { less_than_or_equal_to: 4, greater_than_or_equal_to: 1, allow_blank: true }, uniqueness: { scope: [:y, :stock_id] }
   validates :y, numericality: { greater_than: 2000, allow_blank: true }

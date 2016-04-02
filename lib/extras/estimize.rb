@@ -9,7 +9,7 @@ module Estimize
     page = self.get("https://www.estimize.com/" + ticker)
     parsed = Nokogiri::HTML(page.body)
     return [] if page.code == 404
-    data = parsed.search("script").text.scan(/"releases":"(.*)","allEstimates":"/)[0][0].gsub(/\"/,'').gsub(/},{/,'},,,{').gsub(/\\/,'').split(',,,')
+    data = parsed.search("script").text.scan(/"releases":"(.*)","all_releases":"/)[0][0].gsub(/\"/,'').gsub(/},{/,'},,,{').gsub(/\\/,'').split(',,,')
     hash_data = data.map do |earning|
       hash = {}
       earning[2..-2].gsub(/,(\D)/, '%%%\1').gsub(/(\D),/, '\1%%%').split('%%%').each do |el|
@@ -25,7 +25,7 @@ module Estimize
       params[:y] = earning["name"][-4..-1]
       params[:revenue] = earning["revenue"]
       params[:eps] = earning["eps"]
-      Earning.new(params)
+      Earning.new(params) if ( !params[:eps].nil? && params[:report] < Date.today )
     end
   end
 end
