@@ -29,7 +29,7 @@ render_views
 
     context 'new record, no estimize data' do
       it 'returns @stock with empty earnings' do
-        get :show, {:ticker => 'CRTO'}
+        get :show, {:ticker => 'AMAVF'}
         expect(assigns(:stock).earnings).to be_empty
         expect(response).to render_template(:show)
       end
