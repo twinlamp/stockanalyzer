@@ -22,7 +22,7 @@ class Stock < ActiveRecord::Base
   end
 
   def last_trade_price
-    @last_trade_price ||= quotes.last[:price]
+    @last_trade_price ||= quotes.last.try(:[], :price)
   end
 
   def pe

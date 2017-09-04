@@ -4,6 +4,9 @@ RSpec.describe StocksController, :type => :controller do
 render_views
   describe "GET show" do
     context 'invalid ticker' do
+      before(:each) do
+        Stock.any_instance.stub(:quotes).and_return(nil)
+      end 
       it 'redirects to root page and flashes an error' do
         get :show, {:ticker => 'YYYY'}
         expect(response).to redirect_to root_path
@@ -16,6 +19,9 @@ render_views
     end
 
     context 'no prices data' do
+      before(:each) do 
+        Stock.any_instance.stub(:quotes).and_return(nil)
+      end
       it 'redirects to root page and flashes an error' do
         get :show, {:ticker => 'ACT'}
         expect(response).to redirect_to root_path

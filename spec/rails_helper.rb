@@ -45,18 +45,13 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
-  # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
-  #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
-  #
-  #     RSpec.describe UsersController, :type => :controller do
-  #       # ...
-  #     end
-  #
-  # The different available types are documented in the features, such as in
-  # https://relishapp.com/rspec/rspec-rails/docs
+
+  config.before(:each) do
+    ary = CSV.parse(File.open("./spec/support/quotes.csv", 'r')).map do |a|
+      {date: a[0].to_date, price: a[1], split: a[2]}
+    end
+    AlphaVantage.stub(:quotes).and_return(ary)
+  end
+
   config.infer_spec_type_from_file_location!
 end

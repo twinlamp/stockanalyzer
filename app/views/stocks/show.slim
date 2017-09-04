@@ -6,7 +6,7 @@ h1.page-header
         = button_to "Delete Stock", stock_path(@stock), method: :delete, data: { confirm: "Are you sure?" },  class: "btn btn-default btn-xs"
       -if @split
         .col-md-1
-          = button_to "Update earnings", stock_path(@stock), params: {split: (@split.after / @split.before)}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
+          = button_to "Update earnings", stock_path(@stock), params: {split: @split[:split]}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
         .col-md-1
           = button_to "Ignore split", stock_path(@stock), params: {}, method: :patch, data: { confirm: "Are you sure?" },  class: "btn btn-danger btn-xs"
 .row#current_stock

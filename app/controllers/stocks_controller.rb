@@ -29,7 +29,7 @@ class StocksController < ApplicationController
 
   def update
     stock = Stock.find(params[:id])
-    stock.earnings.each{ |e| e.update_attributes(eps: (e.eps)/(params[:split].to_i)) } if params[:split]
+    stock.earnings.each{ |e| e.update_attributes(eps: e.eps / params[:split].to_i) } if params[:split]
     stock.last_split_date = Date.today
     stock.save
     redirect_to(:back)
