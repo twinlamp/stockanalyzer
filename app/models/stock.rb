@@ -18,7 +18,7 @@ class Stock < ActiveRecord::Base
   end
 
   def quotes
-    @quotes ||= AlphaVantage.historical_quotes(ticker)
+    @quotes ||= AlphaVantage.historical_quotes(ticker).select { |q| q[:date] > Date.today - 5.years }
   end
 
   def last_trade_price
