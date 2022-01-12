@@ -41,7 +41,6 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
-    basic_yahoo_finance (0.2.0)
     binding_of_caller (0.7.3)
       debug_inspector (>= 0.0.1)
     builder (3.2.3)
@@ -226,7 +225,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  basic_yahoo_finance
   byebug
   capybara
   capybara-console
@@ -255,7 +253,7 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 RUBY VERSION
-   ruby 2.6.5p114
+   ruby 2.6.9p207
 
 BUNDLED WITH
    1.17.2
