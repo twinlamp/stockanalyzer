@@ -33,17 +33,17 @@
 development:
   adapter: postgresql
   encoding: unicode
-  host: localhost
+  host: db
   database: stockanalyzer_development
   pool: 5
-  username: twinlamp
-  password: qwerty
+  username: postgres
+  password: 
 
 test:
   adapter: postgresql
   encoding: unicode
-  host: localhost
+  host: db
   database: stockanalyzer_test
   pool: 5
-  username: twinlamp
-  password: qwerty
+  username: postgres
+  password: 

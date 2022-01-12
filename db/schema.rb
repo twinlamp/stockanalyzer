@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,36 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160229152601) do
+ActiveRecord::Schema.define(version: 20171109205256) do
 
-  create_table "earnings", force: :cascade do |t|
-    t.integer  "q"
-    t.date     "report"
-    t.integer  "y"
-    t.float    "revenue"
-    t.float    "eps"
-    t.integer  "stock_id"
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "earnings", id: :serial, force: :cascade do |t|
+    t.integer "q"
+    t.date "report"
+    t.integer "y"
+    t.float "revenue"
+    t.float "eps"
+    t.integer "stock_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "extra"
+    t.index ["stock_id"], name: "index_earnings_on_stock_id"
   end
 
-  add_index "earnings", ["stock_id"], name: "index_earnings_on_stock_id"
-
-  create_table "notes", force: :cascade do |t|
-    t.string   "title"
-    t.text     "body"
-    t.integer  "stock_id"
+  create_table "notes", id: :serial, force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.integer "stock_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.date     "happened_at"
+    t.date "happened_at"
   end
 
-  create_table "stocks", force: :cascade do |t|
-    t.string   "ticker"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+  create_table "stocks", id: :serial, force: :cascade do |t|
+    t.string "ticker"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "last_split_date"
-    t.integer  "earnings_count"
+    t.integer "earnings_count"
   end
 
+  add_foreign_key "earnings", "stocks"
 end

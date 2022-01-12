@@ -48,9 +48,9 @@ RSpec.configure do |config|
 
   config.before(:each) do
     ary = CSV.parse(File.open("./spec/support/quotes.csv", 'r')).map do |a|
-      {date: a[0].to_date, price: a[1], split: a[2]}
+      {date: a[0].to_date, price: a[1].to_f, split: a[2].to_f}
     end
-    AlphaVantage.stub(:quotes).and_return(ary)
+    AlphaVantage.stub(:historical_quotes).and_return(ary)
   end
 
   config.infer_spec_type_from_file_location!

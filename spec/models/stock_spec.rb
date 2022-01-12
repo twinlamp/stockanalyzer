@@ -9,8 +9,6 @@ RSpec.describe Stock, :type => :model do
     
     it { should validate_uniqueness_of(:ticker) }    
 
-    it { should_not allow_value('AAAA').for(:ticker) }    
-
     it { should have_many(:earnings) }
 
     describe "Stock, .update_earnings" do

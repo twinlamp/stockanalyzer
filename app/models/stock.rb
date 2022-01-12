@@ -1,9 +1,17 @@
 class Stock < ActiveRecord::Base
-  has_many :earnings, -> {order(:report)}, inverse_of: :stock, dependent: :destroy
+  has_many :earnings,
+           -> { order(:report) },
+           inverse_of: :stock,
+           dependent: :destroy
   has_many :notes
   attr_readonly :earnings_count
   validates :ticker, presence: true, uniqueness: true
-  validate :has_price_data
+  validate :price_data?
+
+  def test
+    byebug
+    earnings.length
+  end
 
   def update_earnings
     estimize_earnings = Estimize.get_earnings(ticker)
@@ -13,12 +21,15 @@ class Stock < ActiveRecord::Base
     new_earnings.each { |earning| earnings << earning }
   end
 
-  def has_price_data
-    errors.add(:ticker, "no price data on yahoo finance") if (quotes.any? rescue nil).nil?
+  def price_data?
+    errors.add(:ticker, 'no price data on yahoo finance') if quotes.nil?
   end
 
   def quotes
-    @quotes ||= AlphaVantage.historical_quotes(ticker).select { |q| q[:date] > Date.today - 5.years }
+    ary = CSV.parse(File.open("./spec/support/quotes.csv", 'r')).map do |a|
+      {date: a[0].to_date, price: a[1].to_f, split: a[2].to_f}
+    end
+    @quotes ||= ary.sort_by { |q| q[:date] }
   end
 
   def last_trade_price
@@ -26,11 +37,13 @@ class Stock < ActiveRecord::Base
   end
 
   def pe
-    @pe ||= last_trade_price/earnings.last.ttm if earnings.last.try(:ttm).to_f > 0
+    return nil unless earnings.last&.ttm&.to_f&.positive?
+    @pe ||= last_trade_price / earnings.last.ttm
   end
 
   def yoy_ttm
-    @yoy_ttm ||= 100*((earnings[-1].ttm / earnings[-5].ttm) - 1) if earnings[-5].try(:ttm).to_f > 0
+    return nil unless earnings[-5]&.ttm&.to_f&.positive?
+    @yoy_ttm ||= 100 * ((earnings[-1].ttm / earnings[-5].ttm) - 1)
   end
 
   def peg
@@ -38,11 +51,11 @@ class Stock < ActiveRecord::Base
   end
 
   def max_positive_ttm
-    earnings.map { |e| e.ttm.to_f }.select { |ttm| ttm > 0 }.max
+    earnings.map { |e| e.ttm.to_f }.select(&:positive?).max
   end
 
   def min_positive_ttm
-    earnings.map { |e| e.ttm.to_f }.select { |ttm| ttm > 0 }.min
+    earnings.map { |e| e.ttm.to_f }.select(&:positive?).min
   end
 
   def new_splits
@@ -54,6 +67,6 @@ class Stock < ActiveRecord::Base
   end
 
   def yahoo
-    yahoo ||= YahooFinance::Client.new
+    @yahoo ||= YahooFinance::Client.new
   end
 end

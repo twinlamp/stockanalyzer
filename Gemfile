@@ -1,19 +1,15 @@
 source 'https://rubygems.org'
-ruby '2.2.7'
+ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.4'
+gem 'rails', '5.1'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -47,19 +43,15 @@ group :development do
   # Use sqlite3 as the database for Active Record
 end
 
-gem 'pg',             '0.17.1'
+gem 'pg'
 gem 'taps'
 gem 'tilt'
 
 # custom
 gem 'high_voltage', '~> 2.4.0'
-gem 'bootstrap-sass', '~> 3.3.5'
 gem 'yahoo-finance'
-gem "chartkick"
 gem 'slim'
 gem 'httparty'
-gem 'ckeditor'
-gem 'bootstrap-datepicker-rails'
 
 group :development, :test do
   gem 'rspec-rails'
@@ -73,3 +65,5 @@ group :development, :test do
   gem 'poltergeist'
   gem 'phantomjs', :require => 'phantomjs/poltergeist'
 end
+
+gem 'jsonb_assoc', path: 'jsonb_assoc'

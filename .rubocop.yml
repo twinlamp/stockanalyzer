@@ -1,0 +1,8 @@
+AllCops:
+  TargetRubyVersion: 2.3.1
+  Excludes:
+    - db/**
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+Documentation:
+  Enabled: false

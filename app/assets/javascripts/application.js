@@ -10,9 +10,10 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery_ujs
-//= require bootstrap-sprockets
-//= require ckeditor/init
-//= require bootstrap-datepicker/core
+//= require jquery/dist/jquery
+//= require jquery-ujs/src/rails
+//= require bootstrap-sass/assets/javascripts/bootstrap-sprockets
+//= require ckeditor/ckeditor
+//= require bootstrap-datepicker/dist/js/bootstrap-datepicker
+//= require highcharts/highstock
 //= require_tree .

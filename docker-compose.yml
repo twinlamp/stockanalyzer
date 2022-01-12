@@ -1,0 +1,34 @@
+version: "3.2"
+services:
+  redis:
+    restart: always
+    image: redis
+    command: redis-server
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+  web:
+    build: .
+    command: rails server -p 3000 -b '0.0.0.0'
+    env_file:
+      - web-variables.env
+    volumes:
+      - .:/stockanalyzer
+    ports:
+      - "3000:3000"
+    links:
+      - db
+      - redis
+    stdin_open: true
+    tty: true
+volumes:
+  postgresql-data:
+    external: true
+  redis:
+    external: true

@@ -9,6 +9,7 @@ module Estimize
     page = self.get("https://www.estimize.com/#{ticker}", verify: false)
     parsed = Nokogiri::HTML(page.body)
     return [] if page.code == 404
+    byebug
     data = parsed.search("script").text.scan(/"releases":(.*),"all_releases":/)[0][0].gsub(/\"/,'').gsub(/},{/,'},,,{').gsub(/\\/,'').split(',,,')
     hash_data = data.map do |earning|
       hash = {}
