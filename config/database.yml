@@ -37,7 +37,7 @@ development:
   database: stockanalyzer_development
   pool: 5
   username: postgres
-  password: 
+  password: postgres
 
 test:
   adapter: postgresql
@@ -46,4 +46,4 @@ test:
   database: stockanalyzer_test
   pool: 5
   username: postgres
-  password: 
+  password: postgres

@@ -1,4 +1,4 @@
-class CreateEarnings < ActiveRecord::Migration
+class CreateEarnings < ActiveRecord::Migration[5.1]
   def change
     create_table :earnings do |t|
       t.integer :q

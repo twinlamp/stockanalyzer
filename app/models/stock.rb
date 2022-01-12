@@ -9,7 +9,6 @@ class Stock < ActiveRecord::Base
   validate :price_data?
 
   def test
-    byebug
     earnings.length
   end
 
@@ -60,13 +59,5 @@ class Stock < ActiveRecord::Base
 
   def new_splits
     quotes.select { |q| q[:split] != 1 && q[:date] > last_split_date }
-  end
-
-  def mkt_cap
-    yahoo.quotes([ticker], [:market_capitalization])[0][:market_capitalization]
-  end
-
-  def yahoo
-    @yahoo ||= YahooFinance::Client.new
   end
 end

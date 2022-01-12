@@ -15,20 +15,20 @@ ActiveRecord::Schema.define(version: 20171109205256) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "earnings", id: :serial, force: :cascade do |t|
+  create_table "earnings", force: :cascade do |t|
     t.integer "q"
     t.date "report"
     t.integer "y"
     t.float "revenue"
     t.float "eps"
-    t.integer "stock_id"
+    t.bigint "stock_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "extra"
     t.index ["stock_id"], name: "index_earnings_on_stock_id"
   end
 
-  create_table "notes", id: :serial, force: :cascade do |t|
+  create_table "notes", force: :cascade do |t|
     t.string "title"
     t.text "body"
     t.integer "stock_id"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20171109205256) do
     t.date "happened_at"
   end
 
-  create_table "stocks", id: :serial, force: :cascade do |t|
+  create_table "stocks", force: :cascade do |t|
     t.string "ticker"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

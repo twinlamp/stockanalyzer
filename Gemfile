@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.6.3'
+ruby '2.6.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '5.1'
@@ -48,8 +48,7 @@ gem 'taps'
 gem 'tilt'
 
 # custom
-gem 'high_voltage', '~> 2.4.0'
-gem 'yahoo-finance'
+gem 'high_voltage'
 gem 'slim'
 gem 'httparty'
 
@@ -66,4 +65,3 @@ group :development, :test do
   gem 'phantomjs', :require => 'phantomjs/poltergeist'
 end
 
-gem 'jsonb_assoc', path: 'jsonb_assoc'

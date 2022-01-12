@@ -17,9 +17,6 @@ h1.page-header
       .col-md-6
         table.table.table-bordered
           tr
-            td Mkt. cap.
-            td = @stock.mkt_cap
-          tr
             td Price:
             td = @stock.last_trade_price.to_f.round(2)
           tr
